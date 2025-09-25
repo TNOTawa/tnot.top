@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>《文字游戏世界》黑魔法提取器</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .upload-area, .mode-toggle {
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tab {
+      padding: 8px 16px;
+      background: #e0e0e0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .tab.active {
+      background: #3498db;
+      color: white;
+    }
+    .map-content {
+      display: none;
+    }
+    .map-content.active {
+      display: block;
+    }
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .event-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .event-header {
+      padding: 12px 15px;
+      background: #f5f5f5;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .event-title {
+      font-weight: bold;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }
+    .event-text {
+      color: #e67e22;
+      font-size: 0.95em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toggle-icon {
+      font-size: 16px;
+      margin-left: 10px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .command-list {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      background: white;
+    }
+    .command-list.expanded {
+      max-height: 500px;
+      overflow-y: auto;
+      padding: 0 15px 15px;
+    }
+    .command-item {
+      background: #fafafa;
+      padding: 12px;
+      margin-top: 10px;
+      border-left: 3px solid #3498db;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      border-radius: 0 4px 4px 0;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .command-item:hover {
+      background: #eef7ff;
+    }
+    .logic-block {
+      border-left: 3px solid #9b59b6;
+      background: #f8f4ff !important;
+    }
+    .logic-block-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 5px;
+      border-bottom: 1px dashed #dcdcdc;
+    }
+    .logic-block-title {
+      font-weight: bold;
+      color: #8e44ad;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .logic-copy-options {
+      display: flex;
+      gap: 8px;
+      font-size: 0.85em;
+    }
+    .copy-btn {
+      background: #e0e0e0;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover {
+      background: #d0d0d0;
+    }
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #2ecc71;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+    .notification.show {
+      opacity: 1;
+    }
+    .no-events {
+      text-align: center;
+      color: #777;
+      padding: 20px;
+    }
+    label.switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    .switch input {
+      margin: 0;
+    }
+    .indent-guide {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #9b59b6;
+      opacity: 0.3;
+    }
+    .var-name {
+      color: #c0392b;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>《文字游戏世界》黑魔法提取器</h1>
+
+  <div class="controls">
+    <div class="upload-area">
+      <input type="file" id="fileInput" accept=".world,.json" />
+    </div>
+    <div class="mode-toggle">
+      <label class="switch">
+        <input type="checkbox" id="modeSwitch"/>
+        显示黑魔法版本
+      </label>
+    </div>
+  </div>
+
+  <div id="tabsContainer" class="tabs"></div>
+  <div id="mapsContainer"></div>
+
+  <div id="notification" class="notification">已复制！</div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const modeSwitch = document.getElementById('modeSwitch');
+    const tabsContainer = document.getElementById('tabsContainer');
+    const mapsContainer = document.getElementById('mapsContainer');
+    const notification = document.getElementById('notification');
+
+    let currentMapIndex = 0;
+    let mapsData = [];
+    let showProcessed = false;
+    let variableMap = {};
+
+    modeSwitch.addEventListener('change', () => {
+      showProcessed = modeSwitch.checked;
+      if (mapsData.length > 0) {
+        renderTabsAndMaps();
+      }
+    });
+
+    fileInput.addEventListener('change', handleFile);
+
+    function handleFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        try {
+          const data = JSON.parse(event.target.result);
+          if (!data.maps || !Array.isArray(data.maps)) {
+            alert('文件中未包含有效的地图数据。');
+            return;
+          }
+          
+          // 提取所有变量映射
+          variableMap = {};
+          data.maps.forEach(map => {
+            if (map.variants && Array.isArray(map.variants)) {
+              map.variants.forEach(variant => {
+                if (variant.id && variant.name) {
+                  variableMap[variant.id] = variant.name;
+                }
+              });
+            }
+          });
+          
+          mapsData = data.maps;
+          renderTabsAndMaps();
+        } catch (err) {
+          alert('文件解析失败，请确保是有效的 .world 关卡文件。');
+          console.error(err);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function renderTabsAndMaps() {
+      tabsContainer.innerHTML = '';
+      mapsContainer.innerHTML = '';
+
+      mapsData.forEach((map, index) => {
+        const tabBtn = document.createElement('button');
+        tabBtn.className = 'tab';
+        tabBtn.textContent = map.title || `地图 ${index + 1}`;
+        tabBtn.dataset.index = index;
+        tabBtn.addEventListener('click', () => switchMap(index));
+        if (index === 0) tabBtn.classList.add('active');
+        tabsContainer.appendChild(tabBtn);
+
+        const mapDiv = document.createElement('div');
+        mapDiv.className = 'map-content';
+        if (index === 0) mapDiv.classList.add('active');
+
+        const eventList = document.createElement('div');
+        eventList.className = 'event-list';
+
+        const events = map.events || [];
+        let hasCommands = false;
+
+        events.forEach(event => {
+          if (!event.property || !Array.isArray(event.property.commands) || event.property.commands.length === 0) {
+            return;
+          }
+          hasCommands = true;
+          const card = createEventCard(event);
+          eventList.appendChild(card);
+        });
+
+        if (!hasCommands) {
+          eventList.innerHTML = '<div class="no-events">该地图中没有包含指令的物件。</div>';
+        }
+
+        mapDiv.appendChild(eventList);
+        mapsContainer.appendChild(mapDiv);
+      });
+
+      currentMapIndex = 0;
+    }
+
+    function switchMap(index) {
+      document.querySelectorAll('.tab').forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+      });
+      document.querySelectorAll('.map-content').forEach((div, i) => {
+        div.classList.toggle('active', i === index);
+      });
+      currentMapIndex = index;
+    }
+
+    function transformCommand(cmd) {
+      const indentLevel = cmd.indent || 0;
+      const indentPrefix = '  '.repeat(indentLevel);
+
+      // 跳过 @[#raw_command] 类型
+      if (cmd.type === "@[#raw_command]") {
+        return (indentPrefix + (cmd.value || '')).trim();
+      }
+
+      // 提取类型名
+      const typeName = cmd.type.startsWith('#') ? cmd.type.slice(1) : cmd.type;
+
+      // 处理空值指令
+      if (cmd.value === null || cmd.value === undefined) {
+        return indentPrefix + `@[${typeName}]`;
+      }
+
+      // 处理基本类型值
+      if (typeof cmd.value !== 'object') {
+        const valueStr = JSON.stringify(cmd.value);
+        return indentPrefix + `@[${typeName}] { ${valueStr} }`;
+      }
+
+      // 格式化对象/数组值
+      const valueStr = JSON.stringify(cmd.value, null, 2);
+      let inner = valueStr;
+      
+      if (valueStr.startsWith('{') && valueStr.endsWith('}')) {
+        inner = valueStr
+          .slice(1, -1)
+          .split('\n')
+          .map(line => '  ' + line)
+          .join('\n');
+        return indentPrefix + `@[${typeName}] {\n${inner}\n}`;
+      } else if (valueStr.startsWith('[') && valueStr.endsWith(']')) {
+        inner = valueStr
+          .slice(1, -1)
+          .split('\n')
+          .map(line => '  ' + line)
+          .join('\n');
+        return indentPrefix + `@[${typeName}] [\n${inner}\n]`;
+      } else {
+        return indentPrefix + `@[${typeName}] { ${valueStr} }`;
+      }
+    }
+
+    function createEventCard(event) {
+      const card = document.createElement('div');
+      card.className = 'event-card';
+
+      const header = document.createElement('div');
+      header.className = 'event-header';
+
+      const titleSpan = document.createElement('span');
+      titleSpan.className = 'event-title';
+      titleSpan.textContent = event.name || event.id;
+
+      if (event.attribute && event.attribute.text) {
+        const textSpan = document.createElement('span');
+        textSpan.className = 'event-text';
+        textSpan.textContent = event.attribute.text;
+        titleSpan.appendChild(document.createTextNode(' '));
+        titleSpan.appendChild(textSpan);
+      }
+
+      const toggleIcon = document.createElement('span');
+      toggleIcon.className = 'toggle-icon';
+      toggleIcon.textContent = '▶';
+
+      header.appendChild(titleSpan);
+      header.appendChild(toggleIcon);
+      card.appendChild(header);
+
+      const commandList = document.createElement('div');
+      commandList.className = 'command-list';
+
+      // 处理逻辑块分组
+      const logicBlocks = groupLogicBlocks(event.property.commands);
+      
+      logicBlocks.forEach(block => {
+        if (block.type === 'command') {
+          // 普通指令
+          const cmdEl = createCommandItem(block.command);
+          commandList.appendChild(cmdEl);
+        } else {
+          // 逻辑块
+          const logicBlock = document.createElement('div');
+          logicBlock.className = 'command-item logic-block';
+          
+          // 添加缩进引导线
+          const indentGuide = document.createElement('div');
+          indentGuide.className = 'indent-guide';
+          indentGuide.style.left = `${(block.indent + 1) * 16}px`;
+          logicBlock.appendChild(indentGuide);
+          
+          // 逻辑块标题
+          const blockHeader = document.createElement('div');
+          blockHeader.className = 'logic-block-header';
+          
+          const blockTitle = document.createElement('div');
+          blockTitle.className = 'logic-block-title';
+          
+          // 使用变量名替代varId
+          const conditionText = getConditionText(block.condition);
+          blockTitle.innerHTML = conditionText;
+          
+          const copyOptions = document.createElement('div');
+          copyOptions.className = 'logic-copy-options';
+          
+          const copyFullBtn = document.createElement('button');
+          copyFullBtn.className = 'copy-btn';
+          copyFullBtn.textContent = '复制完整逻辑块';
+          copyFullBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            copyLogicBlock(block, true);
+          });
+          
+          const copyInnerBtn = document.createElement('button');
+          copyInnerBtn.className = 'copy-btn';
+          copyInnerBtn.textContent = '仅复制内部指令';
+          copyInnerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            copyLogicBlock(block, false);
+          });
+          
+          copyOptions.appendChild(copyFullBtn);
+          copyOptions.appendChild(copyInnerBtn);
+          blockHeader.appendChild(blockTitle);
+          blockHeader.appendChild(copyOptions);
+          logicBlock.appendChild(blockHeader);
+          
+          // 内部指令
+          const innerCommands = document.createElement('div');
+          innerCommands.style.paddingLeft = '20px';
+          
+          block.commands.forEach(cmd => {
+            const cmdEl = createCommandItem(cmd);
+            innerCommands.appendChild(cmdEl);
+          });
+          
+          logicBlock.appendChild(innerCommands);
+          commandList.appendChild(logicBlock);
+        }
+      });
+
+      card.appendChild(commandList);
+
+      header.addEventListener('click', () => {
+        const isExpanded = commandList.classList.contains('expanded');
+        if (isExpanded) {
+          commandList.classList.remove('expanded');
+          toggleIcon.textContent = '▶';
+        } else {
+          commandList.classList.add('expanded');
+          toggleIcon.textContent = '▼';
+        }
+      });
+
+      return card;
+    }
+
+    function createCommandItem(cmd) {
+      const cmdEl = document.createElement('div');
+      cmdEl.className = 'command-item';
+      
+      let displayText = '';
+      if (showProcessed) {
+        displayText = transformCommand(cmd);
+      } else {
+        displayText = JSON.stringify(cmd, null, 2);
+      }
+      
+      cmdEl.textContent = displayText;
+      
+      cmdEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        copyToClipboard(displayText);
+      });
+      
+      return cmdEl;
+    }
+
+    function groupLogicBlocks(commands) {
+      const blocks = [];
+      const stack = [];
+      
+      for (let i = 0; i < commands.length; i++) {
+        const cmd = commands[i];
+        
+        // 处理逻辑块开始
+        if (cmd.type === '#if') {
+          const block = {
+            type: 'logic',
+            indent: cmd.indent,
+            condition: cmd.value,
+            commands: [],
+          };
+          stack.push({ block, startIndex: i });
+        } 
+        // 处理逻辑块结束
+        else if (cmd.type === '#end_if' && stack.length > 0) {
+          const { block, startIndex } = stack.pop();
+          
+          // 添加块到结果
+          blocks.push(block);
+          
+          // 跳过已处理的指令
+          i = startIndex + block.commands.length + 1;
+        }
+        // 处理逻辑块内部
+        else if (stack.length > 0) {
+          const currentBlock = stack[stack.length - 1].block;
+          currentBlock.commands.push(cmd);
+        }
+        // 普通指令
+        else {
+          blocks.push({
+            type: 'command',
+            command: cmd
+          });
+        }
+      }
+      
+      // 处理未闭合的逻辑块
+      while (stack.length > 0) {
+        const { block } = stack.pop();
+        blocks.push(block);
+      }
+      
+      return blocks;
+    }
+
+    function getConditionText(condition) {
+      if (!condition || !condition.varOption) return '条件判断';
+      
+      const { varId, operation, varValue } = condition.varOption;
+      const varName = variableMap[varId] || varId; // 使用变量名，如果没有则用id
+      
+      // 用红色突出显示变量名
+      return `当变量 <span class="var-name">${varName}</span> ${operation} ${varValue} 时`;
+    }
+
+    function copyLogicBlock(block, includeCondition) {
+      let textToCopy = '';
+      
+      if (includeCondition) {
+        // 复制完整逻辑块
+        textToCopy += transformCommand({
+          type: '#if',
+          value: block.condition,
+          indent: block.indent
+        }) + '\n';
+        
+        block.commands.forEach(cmd => {
+          textToCopy += transformCommand(cmd) + '\n';
+        });
+        
+        textToCopy += transformCommand({
+          type: '#end_if',
+          value: null,
+          indent: block.indent
+        });
+      } else {
+        // 仅复制内部指令
+        block.commands.forEach(cmd => {
+          textToCopy += transformCommand(cmd) + '\n';
+        });
+      }
+      
+      copyToClipboard(textToCopy.trim());
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        notification.classList.add('show');
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 1500);
+      }).catch(err => {
+        console.error('复制失败:', err);
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          notification.classList.add('show');
+          setTimeout(() => notification.classList.remove('show'), 1500);
+        } catch (e) {
+          alert('复制失败，请手动复制。');
+        }
+        document.body.removeChild(textarea);
+      });
+    }
+  </script>
+</body>
+</html>
