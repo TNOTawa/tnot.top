@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <title>TNOTserver</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://s21.ax1x.com/2024/07/05/pkRMffg.png" alt="LOGO" class="logo">
+        </div>
+    </div>
+    <div class="content">
+        <div class="intro">
+            <div class="column">
+                <p>你说的对，但是《TNOTserver》是由TNOT自主运营的一个Minecraft服务器。服务器位于一个被称作「Minecraft」的虚拟游戏世界，在这里，被选择的人将被授予无限创造力的力量，导引他们的冒险。你将扮演一位名为「玩家」的角色，在服务器中邂逅其他玩家、友好的生物们，和他们一起探索未知，找回丢失的那台性能贼**好的服务器——同时，逐步发掘「TNOTserver」的真相。</p>
+                <p>本服是一个公益的亲友服，暂不考虑大型推广。服务器每个周目持续一个长假（寒暑假），未来根据现实生活与经费情况考虑开长期服。希望各位能玩的开心！</p>
+				<hr>
+				<p>目前服务器官网还在测试阶段，有什么想法建议或发现什么bug，欢迎到QQ群反馈！</P>
+            </div>
+            <div class="column buttons">
+                <button type="button" onclick='location.href=("/about.html")'>联系我们</button>
+                <button type="button" onclick="copyIP()">服务器IP</button>
+                <button type="button" onclick='location.href=("/directory.html")'>新闻</button>
+            </div>
+        </div>
+        <hr>
+        <div class="links">
+<!--            <a href="#about">关于我们</a> -->
+<!--            <a href="#legal">法律条规</a> -->
+            <p>© 2024 TNOT. 保留所有权利。本网站的大部分内容由ChatGPT生成，并由本人监督。</p>
+        </div>
+    </div>
+<script>
+  function copyIP() {
+    const text = "tnot.tpddns.cn";
+    navigator.clipboard.writeText(text).then(function() {
+      alert("IP已复制到您的剪贴板：tnot.tpddns.cn");
+    }, function() {
+      alert("复制失败，请更换浏览器！IP可以手动记录：tnot.tpddns.cn");
+    });
+  }
+</script>
+<script src="./bwEffect.js"></script>
+</body>
+</html>

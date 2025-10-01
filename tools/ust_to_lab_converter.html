@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UST to LAB Converter</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 20px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 380px;
+            box-sizing: border-box;
+        }
+        .card h1 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .card p {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .output-section {
+            margin-top: 20px;
+        }
+        .output-section input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .output-section label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .flex {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dropdown {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #fff;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 左侧卡片 -->
+        <div class="card">
+            <h1>UST to LAB Converter - 在线版</h1>
+            <p>有人反应exe版只有win10能用，所以我让gpt做了个在线版的</p>
+            <p>*需要 UST 文件</p>
+            <label for="fileInput" class="button">选择文件</label>
+            <input type="file" id="fileInput" accept=".ust">
+            
+            <div class="output-section">
+                <p class="section-title">上传自动输出~</p>
+
+            </div>
+        </div>
+
+        <!-- 右侧信息卡片 -->
+        <div class="card">
+            <h1>更多：</h1>
+
+            <a href="https://bolanxian.github.io/koharu-label/" class="button">Koharu Label</a><br>
+            <a href="https://www.bilibili.com/video/BV1jeq5YqESG" class="button">使用教程</a>
+            <a href="https://www.123865.com/s/NuDGjv-7jbUA?提取码:utau" class="button">离线版下载（win10）</a>
+            
+        </div>
+    </div>
+</body>
+    <script>
+        // Function to convert UST to LAB
+        function ustToLab(ustText) {
+            const labLines = [];
+            let currentTime = 0;
+
+            // Match tempo from UST file, default if not found
+            const tempoMatch = ustText.match(/Tempo=(\d+(\.\d+)?)/);
+            const tempo = tempoMatch ? parseFloat(tempoMatch[1]) : 120;
+
+            // Split into sections by note identifiers
+            const noteSections = ustText.split(/\[#[0-9A-Z]+\]/).filter(section => section.trim());
+
+            noteSections.forEach(section => {
+                const note = {};
+                const lines = section.split(/\r?\n/);
+
+                lines.forEach(line => {
+                    const parts = line.split('=');
+                    if (parts.length === 2) {
+                        const key = parts[0].trim();
+                        const value = parts[1].trim();
+                        note[key] = value;
+                    }
+                });
+
+                if (note.Length && note.Lyric) {
+                    const lengthMs = (125 * parseFloat(note.Length)) / tempo;
+                    const lengthNs = lengthMs * 10000;
+                    const startTime = currentTime;
+                    const endTime = currentTime + lengthNs;
+                    const phoneme = note.Lyric === "R" ? "pau" : note.Lyric;
+
+                    labLines.push(`${Math.round(startTime)} ${Math.round(endTime)} ${phoneme}`);
+                    currentTime = endTime;
+                }
+            });
+
+            return labLines.join('\n');
+        }
+
+        // Function to handle file selection and conversion
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const arrayBuffer = e.target.result;
+                const textDecoder = new TextDecoder('shift-jis');  // Use Shift-JIS decoding
+                const ustText = textDecoder.decode(arrayBuffer);
+                const labText = ustToLab(ustText);
+
+                // Trigger download of the converted LAB file
+                const blob = new Blob([labText], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = file.name.replace('.ust', '.lab');
+                link.click();
+                
+                document.getElementById('result').textContent = "Conversion successful! Download your LAB file.";
+            };
+            reader.readAsArrayBuffer(file);  // Read file as ArrayBuffer
+        }
+
+        // Add event listeners
+        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+        document.getElementById('convert-btn').addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+    </script>
+
+</body>
+</html>

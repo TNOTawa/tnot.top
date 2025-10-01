@@ -1,0 +1,246 @@
+```news.html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <title>TNOTserver</title>
+    <link rel="stylesheet" href="styles_other.css">
+</head>
+<body>
+    <div class="navbar">
+        <img src="https://s21.ax1x.com/2024/07/05/pkRMffg.png" alt="LOGO" class="logo">
+        <nav>
+            <ul>
+                <li><a href="/index.html">首页</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="content">
+        <div class="intro">
+            <div class="column">
+                <h3>TNOTserver 第六周目玩法投票结果公告</h3>
+                <p>各位玩家：</p>
+                <p>大家好！感谢各位积极参与TNOTserver第六周目玩法的投票。以下是投票结果及解读：</p>
+                <h4>投票结果</h4>
+                <p>本次投票共有六个选项，得票情况如下：</p>
+                <ol>
+				<img src="https://s21.ax1x.com/2024/07/09/pkfyQOA.png" alt="结果" class="intro-img">
+                <li><strong>整合包：13年前的梦</strong>（<a href="https://www.mcmod.cn/modpack/725.html">链接</a>）：4票</li>
+                <li><strong>整合包：僵尸启示录：重制</strong>（<a href="https://www.mcmod.cn/modpack/219.html">链接</a>）：4票</li>
+                <li><strong>整合包：感染者手册</strong>（<a href="https://www.mcmod.cn/modpack/801.html">链接</a>）：4票</li>
+                <li><strong>原版：1.21，优化</strong>：2票</li>
+                <li><strong>整合包：空中厕所</strong>（<a href="https://www.mcmod.cn/modpack/842.html">链接</a>）：2票</li>
+                <li><strong>整合包：脆骨症</strong>（<a href="https://www.mcmod.cn/modpack/722.html">链接</a>）：1票</li>
+                </ol>
+                <p>从投票结果来看，<strong>整合包：13年前的梦</strong>、<strong>僵尸启示录：重制</strong>和<strong>感染者手册</strong>均获得了4票，形成了三方平局。原版1.21和空中厕所各获得2票，脆骨症获得1票。</p>
+                <p>为了公平、公正地决定第六周目的玩法，我们将采取以下解决平票的方案：</p>
+                <h4>平票解决方案</h4>
+                <p>我们将启动一次决胜投票。参与决胜投票的选项为：</p>
+                <ol>
+                <li><strong>整合包：13年前的梦</strong>（<a href="https://www.mcmod.cn/modpack/725.html">链接</a>）</li>
+                <li><strong>整合包：僵尸启示录：重制</strong>（<a href="https://www.mcmod.cn/modpack/219.html">链接</a>）</li>
+                <li><strong>整合包：感染者手册</strong>（<a href="https://www.mcmod.cn/modpack/801.html">链接</a>）</li>
+                </ol>
+                <p>决胜投票将于即刻起开始，持续至明天中午（2024/7/9 12:00）。请大家积极参与，选出你们最想体验的玩法。决胜投票结束后，我们将根据最终得票情况决定第六周目的玩法。</p>
+                <p>【腾讯文档】TNOTserver六周目决胜投票
+                <a href="https://docs.qq.com/form/page/DSkliRlpiT1BnQmZr">https://docs.qq.com/form/page/DSkliRlpiT1BnQmZr</a></p>
+                <p>再次感谢大家的支持与参与！期待与大家一起开启新的冒险旅程！</p>
+                <p>TNOTserver 管理团队</p>
+                <p>日期：2024年7月9日</p>
+
+            </div>
+        </div>
+        <hr>
+        <div class="links">
+<!--            <a href="#about">关于我们</a>
+            <a href="#legal">法律条规</a> -->
+			<p>© 2024 TNOT. 保留所有权利。本网站的大部分内容由ChatGPT生成，并由本人监督。</p>
+        </div>
+    </div>
+	<script src="./bwEffect.js"></script>
+</body>
+</html>
+```
+```about.html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <title>TNOTserver</title>
+    <link rel="stylesheet" href="styles_other.css">
+</head>
+<body>
+    <div class="navbar">
+        <img src="https://s21.ax1x.com/2024/07/05/pkRMffg.png" alt="LOGO" class="logo">
+        <nav>
+            <ul>
+                <li><a href="/index.html">首页</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="content">
+        <div class="intro">
+            <div class="column">
+                <h1>加入官方Q群</h1>
+                <p>目前玩家群体主要通讯工具是QQ，消息通知和玩家反馈都在群内进行！</p>
+				<p>群号：905641079</p>
+				<img src="qq.jpg" alt="群二维码" class="intro-qq">
+            </div>
+        </div>
+        <hr>
+        <div class="links">
+<!--            <a href="#about">关于我们</a>
+            <a href="#legal">法律条规</a> -->
+			<p>© 2024 TNOT. 保留所有权利。本网站的大部分内容由ChatGPT生成，并由本人监督。</p>
+        </div>
+    </div>
+	<script src="./bwEffect.js"></script>
+</body>
+</html>
+```
+```styles_other.css
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    font-family: Arial, sans-serif;
+    background-color: #121212; /* 深色背景 */
+    color: #e0e0e0; /* 浅色文字 */
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #1e1e1e; /* 深色导航栏 */
+}
+
+.navbar .logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 20px;
+}
+
+.navbar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.navbar nav ul li {
+    margin-right: 20px;
+}
+
+.navbar nav ul li a {
+    color: #e0e0e0; /* 浅色文字链接 */
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.navbar nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+    min-height: 100vh;
+    background-color: #121212; /* 深色背景 */
+}
+
+.intro {
+    width: 80%;
+    margin-bottom: 30px;
+    border: 1px solid #333; /* 边框颜色调整为深色 */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.intro-qq {
+    width: 30%; /* 图片宽度 */
+    height: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.intro-img {
+    width: 100%; /* 图片宽度 */
+    height: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.column {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.intro h1 {
+    color: #e0e0e0; /* 浅色标题 */
+}
+
+hr {
+    width: 80%;
+    margin: 30px 0;
+    border: 0;
+    border-top: 1px solid #333; /* 边框颜色调整为深色 */
+}
+
+/* 链接部分的美化 */
+.links {
+    text-align: center;
+    color: #aaa; /* 灰色文字 */
+}
+
+.links a {
+    margin: 0 10px;
+    color: #aaa; /* 灰色链接文字 */
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.link {
+            display: inline-block;
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        .link:hover {
+            background-color: #0056b3;
+        }
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+	.content {
+	    padding: 20px; /* 缩小小屏幕上的内边距 */
+	}
+	.intro {
+	    margin-bottom: 5px;
+	    border: 1px solid #333; /* 边框颜色调整为深色 */
+	    padding: 5px;
+	    border-radius: 8px;
+	}
+	.intro {
+	    width: 100%; /* 调整小屏幕上的简介区域宽度 */
+	}
+	.intro-qq {
+	    width: 50%; /* 图片宽度 */
+	}
+```

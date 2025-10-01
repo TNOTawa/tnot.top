@@ -1,0 +1,157 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    font-family: Arial, sans-serif;
+    background-color: #121212; /* 深色背景 */
+    color: #ffffff; /* 白色文字 */
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    height: 50vh; /* 背景图占据半个屏幕高度 */
+    background: url('https://s21.ax1x.com/2024/07/05/pkRMWtS.png') no-repeat center center;
+    background-size: cover;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* 添加变暗效果 */
+    background-blend-mode: darken; /* 背景图与变暗效果混合 */
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.logo {
+    width: 200px;  /* LOGO的宽度 */
+    height: 200px; /* LOGO的高度 */
+    opacity: 0;
+    animation: fadeInUp 2s forwards;
+    position: absolute;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8)); /* 发光效果 */
+}
+
+@keyframes fadeInUp {
+    0% {
+        transform: translateY(50%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+    min-height: 100vh;
+    background-color: #232323; /* 比背景稍微浅的深色 */
+}
+
+/* 简介和按钮的美化 */
+.intro {
+    width: 80%;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #444;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #2d2d2d;
+    flex-direction: row; /* 默认情况下简介和按钮处于同一行 */
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttons button {
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.buttons button:hover {
+    background-color: #0056b3;
+}
+
+hr {
+    width: 80%;
+    margin: 30px 0;
+    border: 0;
+    border-top: 1px solid #444;
+}
+
+/* 链接部分的美化 */
+.links {
+    text-align: center;
+    color: gray;
+}
+
+.links a {
+    margin: 0 10px;
+    color: gray;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* 添加媒体查询进行手机端适配 */
+@media (max-width: 768px) {
+    .intro {
+        flex-direction: column; /* 当屏幕宽度小于768px时，简介和按钮垂直排列 */
+    }
+    
+    .buttons {
+        margin-top: 20px;
+    }
+
+    .logo {
+        width: 200px;
+        height: 200px; /*  */
+    }
+    
+    .content {
+        padding: 0px; /* 缩小小屏幕上的内边距 */
+    }
+
+    .intro {
+        width: 100%; /* 调整小屏幕上的简介区域宽度 */
+    }
+    
+    hr {
+        width: 100%; /* 调整小屏幕上的分割线宽度 */
+    }
+}
+

@@ -1,0 +1,297 @@
+:root {
+    --bg-color: #f4f4f9;
+    --text-color: #333;
+    --container-bg: #fff;
+    --card-bg: linear-gradient(to right, #4facfe, #00f2fe);
+    --card-hover-bg: linear-gradient(to right, #00f2fe, #4facfe);
+    --subtitle-color: #777;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --toggle-light-bg: linear-gradient(to right, #f2f3fe, #e9fefc); /* 日间按钮背景 */
+    --toggle-dark-bg: linear-gradient(to right, #4f4f55, #6b7277); /* 夜间按钮背景 */
+}
+
+[data-theme="dark"] {
+    --bg-color: #222;
+    --text-color: #fff;
+    --container-bg: #333;
+    --card-bg: linear-gradient(to right, #555, #777);
+    --card-hover-bg: linear-gradient(to right, #777, #999);
+    --subtitle-color: #aaa;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.container {
+    background: var(--container-bg);
+    border-radius: 16px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    max-width: 700px;
+    padding: 40px;
+    text-align: center;
+    margin: 20px;
+    box-sizing: border-box;
+}
+
+.title {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--subtitle-color);
+}
+
+.card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card {
+    background: var(--card-bg);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    background: var(--card-hover-bg);
+}
+
+.card-title {
+    font-size: 18px;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+    pointer-events: none;
+    z-index: -1;
+}
+
+.icon {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold; /* 设置粗体 */
+    font-size: 20px; /* 调整字体大小 */
+    color: var(--text-color);
+    margin: 30px 0; /* 增加上下间距 */
+    position: relative;
+}
+
+.section-title::before,
+.section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ccc; /* 设置淡灰色分割线 */
+    margin: 0 10px; /* 控制分割线和文字之间的距离 */
+}
+
+.theme-toggle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+}
+
+/* Focus styles for accessibility */
+a:focus, button:focus {
+    outline: 3px solid var(--text-color);
+}
+
+.message {
+    font-size: 16px;
+    margin-bottom: 30px;
+    color: var(--subtitle-color);
+}
+
+.logo {
+    width: 120px;
+    height: 120px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px auto;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.video-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.video-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.video-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.video-overlay span {
+    text-align: center;
+    font-weight: bold;
+}
+
+.video-item:hover .video-overlay {
+    opacity: 1;
+}
+
+.video-item:hover {
+    transform: translateY(-5px);
+}
+
+.project-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; /* 卡片间距 */
+    margin-top: 30px;
+}
+
+.project-card {
+    display: flex;
+    flex-direction: column; /* 垂直布局 */
+    align-items: center;
+    background-color: var(--container-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    text-decoration: none; /* 去掉链接默认下划线 */
+    color: var(--text-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px); /* 鼠标悬停时上移 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 悬停时阴影加深 */
+}
+
+.project-card img {
+    width: 100%; /* 封面图占满卡片宽度 */
+    height: auto;
+    display: block;
+}
+
+.project-info {
+    padding: 15px; /* 增加内边距 */
+    text-align: center;
+}
+
+.project-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: bold; /* 标题加粗 */
+}
+
+.project-description {
+    font-size: 14px;
+    color: var(--subtitle-color); /* 描述使用次要颜色 */
+}
+
+.theme-toggle {
+    position: fixed; /* 改为固定定位 */
+    bottom: 20px; /* 距离视窗底部 20px */
+    right: 20px; /* 距离视窗右侧 20px */
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: var(--toggle-light-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+    z-index: 1000; /* 确保按钮在其他元素之上 */
+}
+
+[data-theme="dark"] .theme-toggle {
+    background: var(--toggle-dark-bg);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1); /* 悬停时轻微放大 */
+}
+
+.theme-toggle svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+}

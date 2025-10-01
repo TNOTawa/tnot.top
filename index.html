@@ -1,1 +1,107 @@
-<p>test</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+	<title>TNOT.TOP</title>
+</head>
+<body>
+    <div class="container">
+		<div class="logo">
+		    <img src="logo.png" alt="Logo">
+		</div>
+        <div class="title">这里是TNOT的个人主页</div>
+        <div class="subtitle">希望能做出带给大家快乐的作品！</div>
+        <div class="message">这里有我做的视频以及一些项目。需要注意的是，大部分编程类项目都是使用AI大模型的，因为我不会编程。</div>
+        <div class="card-container">
+            <a href="https://space.bilibili.com/1673962232" class="card link-bilibili">
+                <span class="card-title">BiliBili主页</span>
+                <img src="https://bilibili.com/favicon.ico" alt="BiliBili Logo" class="icon">
+            </a>
+            <a href="https://mc.tnot.top/" class="card link-mc">
+                <span class="card-title">Minecraft服务器</span>
+                <img src="https://mc.tnot.top/favicon.ico" alt="Minecraft Logo" class="icon">
+            </a>
+            <a href="https://tnot.top/utau" class="card link-utau">
+                <span class="card-title">UTAU相关配布</span>
+            </a>
+        </div>
+    
+        <!-- 视频展示 -->
+        <div class="section-title">部分视频（B站）</div>
+        <div class="video-grid">
+            <div class="video-item">
+                <img src="video1.webp" alt="Video 1">
+                <a href="https://www.bilibili.com/video/BV1GsDCYVEww/" target="_blank" class="video-overlay">
+                    <span>【Nottthat】名の無い星が空に堕ちたら【UTAU音源配布】</span>
+                </a>
+            </div>
+            <div class="video-item">
+                <img src="video2.webp" alt="Video 2">
+                <a href="https://www.bilibili.com/video/BV1AztMe4EG8/" target="_blank" class="video-overlay">
+                    <span>11.信息茧房合作 haunted Dance 单品</span>
+                </a>
+            </div>
+			<div class="video-item">
+			    <img src="video3.webp" alt="Video 3">
+			    <a href="https://www.bilibili.com/video/BV1yE4m1R7A2/" target="_blank" class="video-overlay">
+			        <span>致 FUN 2 RHYME 世界的书信 / Letter to the FUN 2 RHYME world</span>
+			    </a>
+			</div>
+			<div class="video-item">
+			    <img src="video4.webp" alt="Video 4">
+			    <a href="https://www.bilibili.com/video/BV1xP4y1B76j/" target="_blank" class="video-overlay">
+			        <span>颜文字烤焦了(￣～￣)</span>
+			    </a>
+			</div>
+        </div>
+    
+        <!-- 项目展示 -->
+        <div class="section-title">我的项目</div>
+        <div class="project-section">
+            <a href="https://tnot.top/utau/Nottthat.html" target="_blank" class="project-card">
+                <img src="np.png" alt="Project 1">
+                <div class="project-info">
+                    <div class="project-title">Nottthat.</div>
+                    <div class="project-description">UTAU音源，配布视频见上方。</div>
+                </div>
+            </a>
+            <a href="https://tnot.top/utau/CVS-UTAU.html" target="_blank" class="project-card">
+                <img src="np.png" alt="Project 2">
+                <div class="project-info">
+                    <div class="project-title">CVS-UTAU</div>
+                    <div class="project-description">辅音元音暴力合成UTAU音源生成器，适合赶进度和懒癌患者。</div>
+                </div>
+            </a>
+            <a href="https://www.bilibili.com/opus/999322466127970306" target="_blank" class="project-card">
+                <img src="np.png" alt="Project 3">
+                <div class="project-info">
+                    <div class="project-title">请输入文本</div>
+                    <div class="project-description">不要点我！！！</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 日夜模式切换按钮 -->
+    <button class="theme-toggle" aria-label="切换主题" onclick="toggleTheme()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path xmlns="http://www.w3.org/2000/svg" d="M10 16.584V18.9996C10 20.1042 10.8954 20.9996 12 20.9996C13.1046 20.9996 14 20.1042 14 18.9996L14 16.584M12 3V4M18.3643 5.63574L17.6572 6.34285M5.63574 5.63574L6.34285 6.34285M4 12H3M21 12H20M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+		<!-- 图标来自 https://www.svgrepo.com/svg/532865/lightbulb-alt -->
+        </svg>
+    </button>
+
+    <script>
+        const toggleTheme = () => {
+            const currentTheme = document.body.dataset.theme === "dark" ? "light" : "dark";
+            document.body.dataset.theme = currentTheme;
+            localStorage.setItem("theme", currentTheme);
+        };
+
+        // Initialize theme
+        document.body.dataset.theme = localStorage.getItem("theme") || 
+                                      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    </script>
+</body>
+</html>

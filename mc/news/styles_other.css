@@ -1,0 +1,187 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    font-family: Arial, sans-serif;
+    background-color: #121212; /* 深色背景 */
+    color: #e0e0e0; /* 浅色文字 */
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #1e1e1e; /* 深色导航栏 */
+}
+
+.navbar .logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 20px;
+}
+
+.navbar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.navbar nav ul li {
+    margin-right: 20px;
+}
+
+.navbar nav ul li a {
+    color: #e0e0e0; /* 浅色文字链接 */
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.navbar nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+    min-height: 100vh;
+    background-color: #121212; /* 深色背景 */
+}
+
+.intro {
+    width: 80%;
+    margin-bottom: 30px;
+    border: 1px solid #333; /* 边框颜色调整为深色 */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.intro-qq {
+    width: 30%; /* 图片宽度 */
+    height: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.intro-img {
+    width: 100%; /* 图片宽度 */
+    height: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.column {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.intro h1 {
+    color: #e0e0e0; /* 浅色标题 */
+}
+
+hr {
+    width: 80%;
+    margin: 30px 0;
+    border: 0;
+    border-top: 1px solid #333; /* 边框颜色调整为深色 */
+}
+
+/* 链接部分的美化 */
+.links {
+    text-align: center;
+    color: #aaa; /* 灰色文字 */
+}
+
+.links a {
+    margin: 0 10px;
+    color: #aaa; /* 灰色链接文字 */
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.link {
+            display: inline-block;
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        .link:hover {
+            background-color: #0056b3;
+        }
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* styles_other.css 中的新增样式 */
+/* styles_other.css 中的新增样式 */
+.columns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+.column {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.card {
+    display: inline-block;
+    width: 45%;
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background-color: #2e2e2e;
+    text-decoration: none;
+    color: #e0e0e0;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #e0e0e0;
+}
+
+.card p {
+    color: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+	.content {
+	    padding: 20px; /* 缩小小屏幕上的内边距 */
+	}
+	.intro {
+	    margin-bottom: 5px;
+	    border: 1px solid #333; /* 边框颜色调整为深色 */
+	    padding: 5px;
+	    border-radius: 8px;
+	}
+	.intro {
+	    width: 100%; /* 调整小屏幕上的简介区域宽度 */
+	}
+	.intro-qq {
+	    width: 50%; /* 图片宽度 */
+	}

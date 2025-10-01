@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>插值多项式计算器</title>
+    <!-- 引入 MathJax -->
+    <script src="https://cdn.polyfill.io/v3/polyfill.min.js" async></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js" defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .code-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .code-toolbar .language-name {
+            font-weight: bold;
+        }
+        .copy-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .copy-button:hover {
+            background-color: #0056b3;
+        }
+        .latex-container {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .input-method {
+            margin-bottom: 10px;
+        }
+        .csv-input {
+            display: none;
+            margin-top: 10px;
+        }
+        .csv-input textarea {
+            width: 100%;
+            height: 100px;
+            resize: vertical;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .table-buttons {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>插值多项式计算器</h1>
+            <p>可用于函数做图、整蛊猜规律、只是为了好玩等等……</p>
+            <p>by TNOT & Qwen2.5</p>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="inputMethod" value="table" checked onchange="toggleInputMethod()">
+                    通过表格输入点位置
+                </label>
+                <label>
+                    <input type="radio" name="inputMethod" value="csv" onchange="toggleInputMethod()">
+                    通过 CSV 格式输入点位置
+                </label>
+            </div>
+
+            <div id="tableInput">
+                <table id="pointsTable">
+                    <thead>
+                        <tr>
+                            <th>x</th>
+                            <th>y</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="number" class="x-value"></td>
+                            <td><input type="number" class="y-value"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="table-buttons">
+                    <button onclick="addRow()">+</button>
+                    <button onclick="removeRow()">-</button>
+                </div>
+            </div>
+
+            <div id="csvInput" class="csv-input">
+                <textarea id="csvData" placeholder="例如：\n1, 2\n2, 3\n3, 5"></textarea>
+            </div>
+
+            <div style="text-align: center;">
+                <button onclick="calculatePolynomial()">计算插值多项式</button>
+            </div>
+            <hr>
+            <div class="result" id="result">
+                <p id="loading-latex">LaTeX 公式可视化：（没显示出来就是显示库没加载完）</p>
+                <div class="latex-container" id="latex-formula"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>使用多项式计算 y 值</h2>
+            <label for="xInput">输入 x:</label>
+            <input type="number" id="xInput">
+            <button onclick="calculateY()">计算 y</button>
+            <div class="result" id="yResult"></div>
+        </div>
+
+        <div class="card">
+            <h2>生成的多项式表达式</h2>
+
+            <div class="code-toolbar">
+                <span class="language-name">Desmos</span>
+                <button class="copy-button" onclick="copyToClipboard('desmos-code')">复制</button>
+            </div>
+            <pre id="desmos-code" class="hljs"></pre>
+
+            <div class="code-toolbar">
+                <span class="language-name">LaTeX Text</span>
+                <button class="copy-button" onclick="copyToClipboard('latex-text-code')">复制</button>
+            </div>
+            <pre id="latex-text-code" class="hljs"></pre>
+
+            <div class="code-toolbar">
+                <span class="language-name">MATLAB</span>
+                <button class="copy-button" onclick="copyToClipboard('matlab-code')">复制</button>
+            </div>
+            <pre id="matlab-code" class="hljs"></pre>
+
+            <div class="code-toolbar">
+                <span class="language-name">Mathematica</span>
+                <button class="copy-button" onclick="copyToClipboard('mathematica-code')">复制</button>
+            </div>
+            <pre id="mathematica-code" class="hljs"></pre>
+
+            <div class="code-toolbar">
+                <span class="language-name">JavaScript</span>
+                <button class="copy-button" onclick="copyToClipboard('javascript-code')">复制</button>
+            </div>
+            <pre id="javascript-code" class="hljs"></pre>
+        </div>
+        <div class="card">
+            <h2>表达式化简</h2>
+            <button onclick='window.open("https://zh.numberempire.com/simplifyexpression.php")' type="button" id="add">简化表达式工具（Desmos格式）</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // 确保 highlight.js 已经加载完成后再进行高亮处理
+            if (typeof hljs !== 'undefined') {
+                hljs.highlightAll();
+            } else {
+                console.error('highlight.js is not loaded');
+            }
+
+            // 确保 MathJax 已经加载完成
+            if (window.MathJax) {
+                window.MathJax.typesetPromise().then(() => console.log('MathJax typeset complete')).catch((err) => console.error(err));
+            } else {
+                console.error('MathJax is not loaded');
+            }
+        });
+
+        let polynomialFunction = null;
+
+        function toggleInputMethod() {
+            const inputMethod = document.querySelector('input[name="inputMethod"]:checked').value;
+            if (inputMethod === 'table') {
+                document.getElementById('tableInput').style.display = 'block';
+                document.getElementById('csvInput').style.display = 'none';
+            } else if (inputMethod === 'csv') {
+                document.getElementById('tableInput').style.display = 'none';
+                document.getElementById('csvInput').style.display = 'block';
+            }
+        }
+
+        function addRow() {
+            const table = document.getElementById('pointsTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow(-1);
+            const xCell = newRow.insertCell(0);
+            const yCell = newRow.insertCell(1);
+            xCell.innerHTML = '<input type="number" class="x-value">';
+            yCell.innerHTML = '<input type="number" class="y-value">';
+        }
+
+        function removeRow() {
+            const table = document.getElementById('pointsTable').getElementsByTagName('tbody')[0];
+            if (table.rows.length > 1) {
+                table.deleteRow(-1);
+            }
+        }
+
+        function parseCSV(csvData) {
+            const lines = csvData.trim().split('\n');
+            const points = [];
+            for (const line of lines) {
+                const [xStr, yStr] = line.split(',').map(s => s.trim());
+                const x = parseFloat(xStr);
+                const y = parseFloat(yStr);
+                if (!isNaN(x) && !isNaN(y)) {
+                    points.push([x, y]);
+                } else {
+                    alert("CSV 数据格式不正确，请确保每一行包含两个有效的数字，用逗号分隔");
+                    return [];
+                }
+            }
+            return points;
+        }
+
+        function calculatePolynomial() {
+            let points = [];
+            const inputMethod = document.querySelector('input[name="inputMethod"]:checked').value;
+
+            if (inputMethod === 'table') {
+                const rows = document.getElementById('pointsTable').getElementsByTagName('tbody')[0].rows;
+                for (let i = 0; i < rows.length; i++) {
+                    const x = parseFloat(rows[i].cells[0].querySelector('.x-value').value);
+                    const y = parseFloat(rows[i].cells[1].querySelector('.y-value').value);
+                    if (!isNaN(x) && !isNaN(y)) {
+                        points.push([x, y]);
+                    } else {
+                        alert("请输入有效的数字");
+                        return;
+                    }
+                }
+            } else if (inputMethod === 'csv') {
+                const csvData = document.getElementById('csvData').value;
+                points = parseCSV(csvData);
+                if (points.length === 0) {
+                    return;
+                }
+            }
+
+            // 拉格朗日插值法
+            function lagrangeInterpolation(points) {
+                const n = points.length;
+                return function(x) {
+                    let result = 0;
+                    for (let i = 0; i < n; i++) {
+                        let term = points[i][1];
+                        for (let j = 0; j < n; j++) {
+                            if (i !== j) {
+                                term *= (x - points[j][0]) / (points[i][0] - points[j][0]);
+                            }
+                        }
+                        result += term;
+                    }
+                    return result;
+                };
+            }
+
+            polynomialFunction = lagrangeInterpolation(points);
+
+            const latexFormula = lagrangeInterpolationFormula(points);
+            const desmosFormula = lagrangeInterpolationDesmos(points);
+            const matlabCode = lagrangeInterpolationMatlab(points);
+            const mathematicaCode = lagrangeInterpolationMathematica(points);
+            const jsExpression = lagrangeInterpolationJs(points);
+
+            document.getElementById('loading-latex').style.display = 'none';
+            document.getElementById('latex-formula').innerHTML = `$$${latexFormula}$$`;
+
+            document.getElementById('matlab-code').textContent = matlabCode.replace(/<pre>|<\/pre>/g, '');
+            document.getElementById('mathematica-code').textContent = mathematicaCode.replace(/<pre>|<\/pre>/g, '');
+            document.getElementById('javascript-code').textContent = jsExpression.replace(/<pre>|<\/pre>/g, '');
+            document.getElementById('desmos-code').textContent = desmosFormula.replace(/<pre>|<\/pre>/g, '');
+            document.getElementById('latex-text-code').textContent = latexFormula.replace(/\$\$/g, '');
+
+            // 确保 MathJax 已经加载完成
+            if (window.MathJax) {
+                window.MathJax.typesetPromise().then(() => console.log('MathJax typeset complete')).catch((err) => console.error(err));
+            } else {
+                console.error('MathJax is not loaded');
+            }
+        }
+
+        function lagrangeInterpolationFormula(points) {
+            const n = points.length;
+            let polynomial = '';
+            for (let i = 0; i < n; i++) {
+                let term = `L_${i}(x) \\cdot ${points[i][1]}`;
+                for (let j = 0; j < n; j++) {
+                    if (i !== j) {
+                        term += ` \\cdot \\frac{x - ${points[j][0]}}{${points[i][0]} - ${points[j][0]}}`;
+                    }
+                }
+                polynomial += `${term} + `;
+            }
+            polynomial = polynomial.slice(0, -2); // Remove the last '+ '
+            return polynomial;
+        }
+
+        function lagrangeInterpolationDesmos(points) {
+            const n = points.length;
+            let polynomial = '';
+            for (let i = 0; i < n; i++) {
+                let term = `${points[i][1]}`;
+                for (let j = 0; j < n; j++) {
+                    if (i !== j) {
+                        term += ` * ((x - ${points[j][0]}) / (${points[i][0]} - ${points[j][0]}))`;
+                    }
+                }
+                polynomial += `${term} + `;
+            }
+            polynomial = polynomial.slice(0, -2); // Remove the last '+ '
+            return polynomial;
+        }
+
+        function lagrangeInterpolationMatlab(points) {
+            const n = points.length;
+            let code = 'function y = polyval_lagrange(x)\n';
+            code += '    y = 0;\n';
+            for (let i = 0; i < n; i++) {
+                let term = `    L${i} = 1;\n`;
+                for (let j = 0; j < n; j++) {
+                    if (i !== j) {
+                        term += `    L${i} = L${i} * (x - ${points[j][0]}) / (${points[i][0]} - ${points[j][0]});\n`;
+                    }
+                }
+                term += `    y = y + ${points[i][1]} * L${i};\n`;
+                code += term;
+            }
+            code += 'end\n';
+            return `<pre>${code}</pre>`;
+        }
+
+        function lagrangeInterpolationMathematica(points) {
+            const n = points.length;
+            let code = 'polyvalLagrange[x_] := Module[{y = 0},\n';
+            for (let i = 0; i < n; i++) {
+                let term = `    Li = 1;\n`;
+                for (let j = 0; j < n; j++) {
+                    if (i !== j) {
+                        term += `    Li = Li * (x - ${points[j][0]}) / (${points[i][0]} - ${points[j][0]});\n`;
+                    }
+                }
+                term += `    y = y + ${points[i][1]} * Li;\n`;
+                code += term;
+            }
+            code += '    y\n]';
+            code += ']\n';
+            return `<pre>${code}</pre>`;
+        }
+
+        function lagrangeInterpolationJs(points) {
+            const n = points.length;
+            let expression = 'function polyvalLagrange(x) {\n';
+            expression += '    let y = 0;\n';
+            for (let i = 0; i < n; i++) {
+                let term = `    let Li = 1;\n`;
+                for (let j = 0; j < n; j++) {
+                    if (i !== j) {
+                        term += `    Li = Li * (x - ${points[j][0]}) / (${points[i][0]} - ${points[j][0]});\n`;
+                    }
+                }
+                term += `    y = y + ${points[i][1]} * Li;\n`;
+                expression += term;
+            }
+            expression += '    return y;\n}';
+            return `<pre>${expression}</pre>`;
+        }
+
+        function calculateY() {
+            if (!polynomialFunction) {
+                alert("请先计算插值多项式");
+                return;
+            }
+            const x = parseFloat(document.getElementById('xInput').value);
+            if (isNaN(x)) {
+                alert("请输入有效的数字");
+                return;
+            }
+            const y = polynomialFunction(x);
+            document.getElementById('yResult').innerText = `当 x = ${x} 时, y = ${y}`;
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = element.textContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+            alert('代码已复制到剪贴板！');
+        }
+    </script>
+</body>
+</html>
+
+
+

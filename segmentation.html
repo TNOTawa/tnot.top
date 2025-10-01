@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线文本分割工具-辅助AI翻译和阅读的工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+        }
+        input[type="number"] {
+            width: 100px;
+            margin-right: 10px;
+        }
+        select {
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .segment {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>在线文本分割工具（by TNOT& Qwen2.5）</h1>
+	<p>本工具可以将一段长文本平均分割为多段短文本</p>
+	<p>旨在方便使用AI阅读和翻译长文本使用</p>
+	<p>使用了Qwen2.5进行代码生成</p>
+	<p>注：文本框内不会保留换行，如需保留换行请下载分割后文件</p>
+    <textarea id="textInput" placeholder="请输入您的长文本..."></textarea><br>
+    <label for="numSegments">分段数量:</label>
+    <input type="number" id="numSegments" value="2"><br>
+    <label for="delimiter">分隔符:</label>
+    <select id="delimiter">
+        <option value=",">逗号</option>
+        <option value="\n">换行</option>
+        <option value="\n\n">空行</option>
+        <option value=" ">空格</option>
+        <option value=".">句号</option>
+    </select><br>
+    <button onclick="splitText()">分割文本</button>
+    <button onclick="downloadSegments()">下载分割后文件</button>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        let segments = [];
+
+        function splitText() {
+            const textInput = document.getElementById('textInput').value;
+            const numSegments = parseInt(document.getElementById('numSegments').value);
+            const delimiter = document.getElementById('delimiter').value;
+
+            if (!textInput || isNaN(numSegments) || numSegments <= 0) {
+                alert("请输入有效的文本和分段数量");
+                return;
+            }
+
+            // Replace the escape sequences with actual characters
+            let realDelimiter = delimiter;
+            switch (delimiter) {
+                case "\\n":
+                    realDelimiter = "\n";
+                    break;
+                case "\\n\\n":
+                    realDelimiter = "\n\n";
+                    break;
+            }
+
+            // Split the text by the selected delimiter
+            let parts = textInput.split(realDelimiter);
+
+            // Merge parts to achieve the desired number of segments
+            segments = [];
+            for (let i = 0; i < numSegments; i++) {
+                segments.push([]);
+            }
+
+            let currentSegment = 0;
+            parts.forEach(part => {
+                if (part.trim().length > 0) {
+                    segments[currentSegment].push(part);
+                    currentSegment = (currentSegment + 1) % numSegments;
+                }
+            });
+
+            // Join parts in each segment and add delimiters back
+            segments = segments.map(segment => segment.join(realDelimiter));
+
+            // Display the result
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+            segments.forEach(segment => {
+                const segmentDiv = document.createElement('div');
+                segmentDiv.className = 'segment';
+                segmentDiv.textContent = segment;
+                resultDiv.appendChild(segmentDiv);
+            });
+        }
+
+        function downloadSegments() {
+            if (segments.length === 0) {
+                alert("请先分割文本");
+                return;
+            }
+
+            segments.forEach((segment, index) => {
+                const blob = new Blob([segment], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `segment_${index + 1}.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+    </script>
+</body>
+</html>
