@@ -372,17 +372,34 @@
             return [year, month, day];
         }
     };
-        // 使用 Lunar 库进行农历转换
+        // 使用 Lunar 库进行农历转换（2025.10更新计算）
         function getNextYearSpringFestival() {
             const now = new Date();
-            const springFestival2024 = new Date(Lunar.toSolar(2024, 1, 1));  // 使用 Lunar 库获取农历2024年春节日期（公历）
+            const currentYear = now.getFullYear();
 
-            if (now < springFestival2024) {
-                return springFestival2024;
-            } else {
-                // 计算明年的春节（2025年）
-                return new Date(Lunar.toSolar(2025, 1, 1));  // 假定2025年春节日期
+            // 尝试从当前年份开始往后找，最多找3年（足够覆盖春节在1~2月的情况）
+            for (let y = currentYear; y <= currentYear + 3; y++) {
+                try {
+                    // 农历 y 年 正月初一 对应的公历日期
+                    const [gy, gm, gd] = Lunar.toSolar(y, 1, 1);
+                    const springFestival = new Date(gy, gm - 1, gd); // 注意：月份从0开始
+
+                    // 计算当前时间与该春节的天数差（允许春节后3天内仍视为“当前春节”）
+                    const diffDays = Math.floor((now - springFestival) / (1000 * 60 * 60 * 24));
+
+                    // 如果春节还没到，或者刚过不超过3天，则返回这个春节
+                    if (springFestival >= now || diffDays <= 3) {
+                        return springFestival;
+                    }
+                } catch (e) {
+                    // 超出 Lunar 支持范围（1891-2100），但一般不会触发
+                    continue;
+                }
             }
+
+            // 兜底：返回当前年+1的春节（理论上不会走到这里）
+            const [gy, gm, gd] = Lunar.toSolar(currentYear + 1, 1, 1);
+            return new Date(gy, gm - 1, gd);
         }
 
         let beishu = 1;
@@ -418,10 +435,19 @@
             // 动态更新裁剪区域
             document.getElementById('topImage').style.clipPath = `inset(${percentage}% 0% 0% 0%)`;
 
-            // 倒计时结束时处理
-            if (distance <= 0) {
-                document.getElementById('backgroundImage').style.transform = 'scale(2)';
-                document.getElementById('happyNewYear').style.display = 'block';
+            // 倒计时结束时处理（2025.10更新）
+            if (distance < 0) {
+                const overdueDays = Math.ceil(-distance / (1000 * 60 * 60 * 24));
+                if (overdueDays <= 3) {
+                    // 春节后3天内，显示“已过 X 天”
+                    document.getElementById('countdown').innerHTML = `春节已过 ${overdueDays} 天`;
+                } else {
+                    // 理论上不会出现，因为 getNextYearSpringFestival 已处理
+                    document.getElementById('countdown').innerHTML = "正在计算下一个春节...";
+                }
+            } else {
+                // 正常倒计时
+                document.getElementById('countdown').innerHTML = `${days}天 ${hours}小时 ${minutes}分钟 ${seconds}秒 ${milliseconds}毫秒`;
             }
         }
 
