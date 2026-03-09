@@ -159,103 +159,130 @@ a:focus, button:focus {
     object-fit: cover;
 }
 
-.video-grid {
+.bilibili-card {
+    display: flex;
+    align-items: center;
+    background: var(--container-bg);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bilibili-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px var(--shadow-color);
+}
+
+.bili-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+    object-fit: cover;
+}
+
+.bili-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.bili-name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bili-name {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.bili-level {
+    height: 24px;
+    width: auto;
+}
+
+.project-section {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
     margin-top: 30px;
 }
 
-.video-item {
+.project-card {
     position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.video-item img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-}
-
-.video-overlay {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 250px;
+    background-color: var(--container-bg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.project-card.has-cover {
+    background-color: transparent;
+}
+
+.project-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    color: #fff;
-    font-size: 18px;
-    text-decoration: none;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7));
+    z-index: 1;
 }
 
-.video-overlay span {
-    text-align: center;
-    font-weight: bold;
+.project-card:not(.has-cover) .project-overlay {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
 }
 
-.video-item:hover .video-overlay {
-    opacity: 1;
-}
-
-.video-item:hover {
-    transform: translateY(-5px);
-}
-
-.project-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px; /* 卡片间距 */
-    margin-top: 30px;
-}
-
-.project-card {
-    display: flex;
-    flex-direction: column; /* 垂直布局 */
-    align-items: center;
-    background-color: var(--container-bg);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px var(--shadow-color);
-    text-decoration: none; /* 去掉链接默认下划线 */
-    color: var(--text-color);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.project-card:hover {
-    transform: translateY(-5px); /* 鼠标悬停时上移 */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 悬停时阴影加深 */
-}
-
-.project-card img {
-    width: 100%; /* 封面图占满卡片宽度 */
-    height: auto;
-    display: block;
-}
-
-.project-info {
-    padding: 15px; /* 增加内边距 */
-    text-align: center;
+.project-content {
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+    text-align: left;
 }
 
 .project-title {
-    font-size: 18px;
-    margin-bottom: 10px;
-    font-weight: bold; /* 标题加粗 */
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.project-card:not(.has-cover) .project-title {
+    color: var(--text-color);
+    text-shadow: none;
 }
 
 .project-description {
     font-size: 14px;
-    color: var(--subtitle-color); /* 描述使用次要颜色 */
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.project-card:not(.has-cover) .project-description {
+    color: var(--subtitle-color);
+    text-shadow: none;
 }
 
 .theme-toggle {
@@ -291,7 +318,13 @@ a:focus, button:focus {
 
 /* Responsive Design */
 @media (max-width: 600px) {
-    .video-grid {
-        grid-template-columns: 1fr;
+    .bilibili-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .bili-avatar {
+        margin-right: 0;
+        margin-bottom: 15px;
     }
 }

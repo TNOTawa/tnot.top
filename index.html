@@ -28,61 +28,27 @@
             </a>
         </div>
     
-        <!-- 视频展示 -->
-        <div class="section-title">部分视频（B站）</div>
-        <div class="video-grid">
-            <div class="video-item">
-                <img src="video1.webp" alt="Video 1">
-                <a href="https://www.bilibili.com/video/BV1GsDCYVEww/" target="_blank" class="video-overlay">
-                    <span>【Nottthat】名の無い星が空に堕ちたら【UTAU音源配布】</span>
-                </a>
+    <!-- B站UP主展示 -->
+        <div class="section-title">B站名片</div>
+        <div class="bilibili-card">
+            <img src="https://i2.hdslb.com/bfs/face/db9f862471c7ba0df076bd1c46157dbad34f745e.jpg@150w_150h.jpg" alt="TNOT头像" class="bili-avatar">
+            <div class="bili-info">
+                <div class="bili-name-row">
+                    <span class="bili-name">TNOT</span>
+                    <img src="Lv6.svg" alt="等级" class="bili-level">
+                </div>
             </div>
-            <div class="video-item">
-                <img src="video2.webp" alt="Video 2">
-                <a href="https://www.bilibili.com/video/BV1AztMe4EG8/" target="_blank" class="video-overlay">
-                    <span>11.信息茧房合作 haunted Dance 单品</span>
-                </a>
-            </div>
-			<div class="video-item">
-			    <img src="video3.webp" alt="Video 3">
-			    <a href="https://www.bilibili.com/video/BV1yE4m1R7A2/" target="_blank" class="video-overlay">
-			        <span>致 FUN 2 RHYME 世界的书信 / Letter to the FUN 2 RHYME world</span>
-			    </a>
-			</div>
-			<div class="video-item">
-			    <img src="video4.webp" alt="Video 4">
-			    <a href="https://www.bilibili.com/video/BV1xP4y1B76j/" target="_blank" class="video-overlay">
-			        <span>颜文字烤焦了(￣～￣)</span>
-			    </a>
-			</div>
         </div>
     
         <!-- 项目展示 -->
         <div class="section-title">我的项目</div>
-        <div class="project-section">
-            <a href="https://tnot.top/utau/Nottthat.html" target="_blank" class="project-card">
-                <img src="np.png" alt="Project 1">
-                <div class="project-info">
-                    <div class="project-title">Nottthat.</div>
-                    <div class="project-description">UTAU音源，配布视频见上方。</div>
-                </div>
-            </a>
-            <a href="https://tnot.top/utau/CVS-UTAU.html" target="_blank" class="project-card">
-                <img src="np.png" alt="Project 2">
-                <div class="project-info">
-                    <div class="project-title">CVS-UTAU</div>
-                    <div class="project-description">辅音元音暴力合成UTAU音源生成器，适合赶进度和懒癌患者。</div>
-                </div>
-            </a>
-            <a href="https://www.bilibili.com/opus/999322466127970306" target="_blank" class="project-card">
-                <img src="np.png" alt="Project 3">
-                <div class="project-info">
-                    <div class="project-title">请输入文本</div>
-                    <div class="project-description">不要点我！！！</div>
-                </div>
-            </a>
+        <div class="project-section" id="projectSection">
+            <!-- 项目卡片将通过 JavaScript 动态加载 -->
         </div>
     </div>
+
+    <!-- 项目数据 -->
+    <script src="projects.js"></script>
 
     <!-- 日夜模式切换按钮 -->
     <button class="theme-toggle" aria-label="切换主题" onclick="toggleTheme()">
@@ -92,6 +58,7 @@
         </svg>
     </button>
 
+    <!-- 主题切换脚本 -->
     <script>
         const toggleTheme = () => {
             const currentTheme = document.body.dataset.theme === "dark" ? "light" : "dark";
@@ -102,6 +69,74 @@
         // Initialize theme
         document.body.dataset.theme = localStorage.getItem("theme") || 
                                       (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+
+        // 动态加载项目数据
+        function loadProjects() {
+            const projectSection = document.getElementById('projectSection');
+            projectsData.forEach(project => {
+                const card = document.createElement('a');
+                card.href = project.url;
+                card.target = '_blank';
+                card.className = 'project-card';
+                
+                // 图片加载优化：优先使用缩略图，然后懒加载高清图
+                if (project.coverUrl && project.coverUrl.trim()) {
+                    card.classList.add('has-cover');
+                    
+                    // 如果有缩略图，先加载缩略图
+                    const imageUrl = project.thumbnailUrl && project.thumbnailUrl.trim() 
+                        ? project.thumbnailUrl 
+                        : project.coverUrl;
+                    
+                    card.style.backgroundImage = `url('${imageUrl}')`;
+                    
+                    // 如果提供了缩略图和高清图，懒加载高清图
+                    if (project.thumbnailUrl && project.thumbnailUrl.trim() && 
+                        project.coverUrl !== project.thumbnailUrl) {
+                        lazyLoadHighResImage(card, project.coverUrl);
+                    }
+                } else if (project.bgColor && project.bgColor.trim()) {
+                    // 如果没有封面但有背景色
+                    card.style.backgroundColor = project.bgColor;
+                }
+                
+                card.innerHTML = `
+                    <div class="project-overlay"></div>
+                    <div class="project-content">
+                        <div class="project-title">${project.name}</div>
+                        <div class="project-description">${project.description}</div>
+                    </div>
+                `;
+                
+                projectSection.appendChild(card);
+            });
+        }
+
+        // 懒加载高清图片
+        function lazyLoadHighResImage(element, highResUrl) {
+            const img = new Image();
+            img.onload = () => {
+                element.style.backgroundImage = `url('${highResUrl}')`;
+            };
+            // 使用 Intersection Observer 实现懒加载
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            img.src = highResUrl;
+                            observer.unobserve(element);
+                        }
+                    });
+                }, { rootMargin: '50px' });
+                observer.observe(element);
+            } else {
+                // 不支持 IntersectionObserver 时直接加载
+                img.src = highResUrl;
+            }
+        }
+
+        // 页面加载时执行
+        window.addEventListener('DOMContentLoaded', loadProjects);
     </script>
 </body>
 </html>
