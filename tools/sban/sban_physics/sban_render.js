@@ -18,6 +18,7 @@ const RenderModule = (function() {
         customWidth: document.getElementById('custom-width'),
         customHeight: document.getElementById('custom-height'),
         renderFps: document.getElementById('render-fps'),
+        renderForceFrameData: document.getElementById('render-force-frame-data'),
         renderDuration: document.getElementById('render-duration'),
         renderQuality: document.getElementById('render-quality'),
         renderPreviewBtn: document.getElementById('render-preview-btn'),
@@ -36,11 +37,13 @@ const RenderModule = (function() {
         mediaRecorder: null,
         recordedChunks: [],
         progressTimer: null,
+        frameDataTimer: null,
         stopTimer: null,
         startTimestamp: 0,
         durationMs: 0,
         fps: 30,
-        quality: 5000000
+        quality: 5000000,
+        forceFrameData: true
     };
 
     function init() {
@@ -94,7 +97,8 @@ const RenderModule = (function() {
             height,
             fps: parseInt(elements.renderFps.value) || 30,
             duration: parseInt(elements.renderDuration.value) || 15,
-            quality: parseInt(elements.renderQuality.value) || 5000000
+            quality: parseInt(elements.renderQuality.value) || 5000000,
+            forceFrameData: !elements.renderForceFrameData || elements.renderForceFrameData.value !== 'false'
         };
     }
 
@@ -266,6 +270,7 @@ const RenderModule = (function() {
         const settings = getRenderSettings();
         runtime.fps = settings.fps;
         runtime.quality = settings.quality;
+        runtime.forceFrameData = settings.forceFrameData;
         runtime.durationMs = settings.duration * 1000;
 
         elements.renderStartBtn.disabled = true;
@@ -299,7 +304,20 @@ const RenderModule = (function() {
 
             runtime.isRendering = true;
             runtime.startTimestamp = Date.now();
-            runtime.mediaRecorder.start();
+            const frameIntervalMs = Math.max(1, Math.round(1000 / runtime.fps));
+            runtime.mediaRecorder.start(runtime.forceFrameData ? frameIntervalMs : undefined);
+
+            if (runtime.forceFrameData) {
+                runtime.frameDataTimer = setInterval(() => {
+                    if (!runtime.mediaRecorder || runtime.mediaRecorder.state !== 'recording') return;
+                    try {
+                        runtime.mediaRecorder.requestData();
+                    } catch (_) {
+                        // 某些浏览器在状态切换时可能短暂抛错，忽略即可
+                    }
+                }, frameIntervalMs);
+            }
+
             elements.progressText.textContent = '渲染中（与原生播放一致）...';
 
             runtime.progressTimer = setInterval(updateProgress, 100);
@@ -324,6 +342,10 @@ const RenderModule = (function() {
         if (runtime.progressTimer) {
             clearInterval(runtime.progressTimer);
             runtime.progressTimer = null;
+        }
+        if (runtime.frameDataTimer) {
+            clearInterval(runtime.frameDataTimer);
+            runtime.frameDataTimer = null;
         }
         if (runtime.stopTimer) {
             clearTimeout(runtime.stopTimer);

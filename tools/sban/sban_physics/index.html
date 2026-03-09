@@ -236,6 +236,15 @@
             </div>
 
             <div class="render-setting-group">
+                <label>补帧录制（防丢帧）</label>
+                <select id="render-force-frame-data">
+                    <option value="true" selected>启用（默认，录制时尽量补齐每帧）</option>
+                    <option value="false">关闭（更省性能）</option>
+                </select>
+                <small style="color: #888; font-size: 12px;">启用后会在录制时主动补齐帧数据，降低卡顿导致的丢帧概率</small>
+            </div>
+
+            <div class="render-setting-group">
                 <label>视频时长 (秒)</label>
                 <input type="number" id="render-duration" value="15" min="5" max="120">
                 <small style="color: #888; font-size: 12px;">建议根据动画实际时长设置</small>
