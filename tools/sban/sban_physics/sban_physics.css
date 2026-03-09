@@ -1,0 +1,388 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    overflow: hidden;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: #ffffff;
+    user-select: none;
+}
+
+/* 初始 UI 层 - 左右布局 */
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    z-index: 10;
+    transition: opacity 0.5s ease;
+    background-color: #000;
+}
+
+/* 左侧配置区域 */
+.config-sidebar {
+    width: 380px;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #111;
+    border-right: 2px solid #333;
+    padding: 30px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-title {
+    font-size: 24px;
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 30px 0;
+    text-align: center;
+}
+
+/* 右侧预览区域 */
+.preview-area {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    position: relative;
+}
+
+.preview-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.subtitle-preview {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+    font-family: 'Hiragino Sans GB W8', 'Noto Sans SC', sans-serif;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+    position: relative;
+}
+
+.subtitle-preview::-webkit-scrollbar {
+    display: none;
+}
+
+.subtitle-preview {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.setting-group label {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 8px;
+}
+
+.setting-group input, .setting-group textarea, .setting-group select {
+    background: #222;
+    border: 2px solid #555;
+    color: #fff;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 6px;
+    outline: none;
+}
+
+.setting-group input:focus, .setting-group textarea:focus, .setting-group select:focus {
+    border-color: #fff;
+}
+
+.setting-group select {
+    cursor: pointer;
+}
+
+.setting-group input[type="number"] {
+    width: 100%;
+}
+
+.setting-group textarea {
+    height: 120px;
+    resize: none;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.section-title {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #444;
+}
+
+.section-title label {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+}
+
+#play-btn, #render-btn {
+    padding: 15px 50px;
+    font-size: 22px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 900;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    margin-top: 30px;
+    width: 100%;
+}
+
+#play-btn {
+    background: #fff;
+    color: #000;
+}
+
+#play-btn:active {
+    transform: scale(0.95);
+}
+
+#play-btn:hover {
+    background: #eee;
+}
+
+#render-btn {
+    background: #222;
+    color: #fff;
+    border: 2px solid #555;
+    margin-top: 15px;
+}
+
+#render-btn:active {
+    transform: scale(0.95);
+}
+
+#render-btn:hover {
+    background: #333;
+    border-color: #777;
+}
+
+/* 物理画布 */
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none; 
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none !important;
+}
+
+/* 自定义滚动条样式 */
+.config-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.config-sidebar::-webkit-scrollbar-track {
+    background: #111;
+}
+
+.config-sidebar::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+.config-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+/* 渲染对话框 */
+.render-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+
+.render-dialog-content {
+    background: #111;
+    border: 2px solid #555;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.render-dialog-content h2 {
+    margin: 0 0 25px 0;
+    font-size: 26px;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+}
+
+.render-setting-group {
+    margin-bottom: 20px;
+}
+
+.render-setting-group label {
+    display: block;
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 8px;
+}
+
+.render-setting-group input,
+.render-setting-group select {
+    width: 100%;
+    background: #222;
+    border: 2px solid #555;
+    color: #fff;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 6px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.render-setting-group input:focus,
+.render-setting-group select:focus {
+    border-color: #fff;
+}
+
+.render-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.render-btn-primary,
+.render-btn-secondary {
+    flex: 1;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 900;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.render-btn-primary {
+    background: #fff;
+    color: #000;
+}
+
+.render-btn-primary:hover {
+    background: #eee;
+    transform: translateY(-2px);
+}
+
+.render-btn-primary:active {
+    transform: translateY(0);
+}
+
+.render-btn-secondary {
+    background: #333;
+    color: #fff;
+    border: 2px solid #555;
+}
+
+.render-btn-secondary:hover {
+    background: #444;
+    border-color: #777;
+}
+
+.render-btn-secondary:active {
+    transform: scale(0.98);
+}
+
+.render-progress {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 2px solid #333;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background: #222;
+    border: 2px solid #555;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 13px;
+}
+
+.progress-text {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 14px;
+    color: #aaa;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    #ui-layer {
+        flex-direction: column;
+    }
+    
+    .config-sidebar {
+        width: 100%;
+        height: 50%;
+        border-right: none;
+        border-bottom: 2px solid #333;
+    }
+    
+    .preview-area {
+        height: 50%;
+    }
+
+    .render-dialog-content {
+        padding: 20px;
+    }
+
+    .render-buttons {
+        flex-direction: column;
+    }
+}

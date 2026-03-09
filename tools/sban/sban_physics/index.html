@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全所为物理文字在线制作工具</title>
+    <!-- 引入 Matter.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <!-- 引入字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@900&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
+    <!-- 引入外部样式 -->
+    <link rel="stylesheet" href="sban_physics.css">
+</head>
+<body>
+
+    <!-- UI 层 -->
+    <div id="ui-layer">
+        <!-- 左侧配置区域 -->
+        <div class="config-sidebar">
+            <h2 class="sidebar-title">配置设置</h2>
+            <!-- 掉落文字内容 -->
+            <div class="setting-group full-width">
+                <label>掉落文字内容（支持多行）</label>
+                <textarea id="input-text" placeholder="在此输入要掉落的文字...">それは万有引力の、
+様なモノであり、
+抗えば抗う程、
+青く燃え上がるのです。
+それはテレメトリ信号が、
+指し示す通り、
+もがく腕や足はもう、
+意味をなさないのです。</textarea>
+            </div>
+
+            <!-- 底部字幕内容 -->
+            <div class="setting-group full-width">
+                <label>底部上升字幕内容</label>
+                <input type="text" id="subtitle-text" value="全てあなたの所為です。" placeholder="输入底部字幕">
+            </div>
+
+            <!-- 字间距 -->
+            <div class="setting-group">
+                <label>字间距 (px)</label>
+                <input type="number" id="char-gap" value="0" min="0" max="50">
+            </div>
+
+            <!-- 行间距 -->
+            <div class="setting-group">
+                <label>行间距 (px)</label>
+                <input type="number" id="line-gap" value="120" min="20" max="2000">
+            </div>
+
+            <!-- 字幕速度 -->
+            <div class="setting-group">
+                <label>字幕上升时间 (秒)</label>
+                <input type="number" id="subtitle-duration" value="8" min="1" max="30">
+            </div>
+
+            <!-- 延迟时间 -->
+            <div class="setting-group">
+                <label>开始前延迟 (秒)</label>
+                <input type="number" id="start-delay" value="0" min="0" max="10">
+            </div>
+
+            <!-- 物理文字释放时间 -->
+            <div class="setting-group">
+                <label>物理文字释放时间 (秒)</label>
+                <input type="number" id="physics-release-time" value="1.5" min="0" max="30">
+            </div>
+
+            <!-- 字体选择 -->
+            <div class="setting-group">
+                <label>字体选择</label>
+                <select id="font-family">
+                    <option value="Noto Sans JP Black" selected>Noto Sans JP Black（默认）</option>
+                    <option value="Hiragino Sans GB W8">Hiragino Sans GB W8</option>
+                    <option value="Noto Sans SC Black">Noto Sans SC Black</option>
+                    <option value="custom">自定义字体...</option>
+                </select>
+            </div>
+
+            <!-- 自定义字体上传 -->
+            <div class="setting-group" id="custom-font-group" style="display: none;">
+                <label>上传字体文件（.ttf, .otf, .woff, .woff2）</label>
+                <input type="file" id="custom-font-file" accept=".ttf,.otf,.woff,.woff2">
+                <div id="custom-font-name" style="margin-top: 8px; font-size: 12px; color: #888;"></div>
+            </div>
+
+            <!-- 汉字字号 -->
+            <div class="setting-group">
+                <label>汉字字号 (px)</label>
+                <input type="number" id="kanji-size" value="70" min="2" max="200">
+            </div>
+
+            <!-- 假名+标点符号字号 -->
+            <div class="setting-group">
+                <label>假名&标点符号字号 (px)</label>
+                <input type="number" id="kana-size" value="50" min="2" max="200">
+            </div>
+
+            <!-- 全局选项分隔 -->
+            <div class="setting-group full-width section-title">
+                <label>全局选项</label>
+            </div>
+
+            <!-- 整体缩放 -->
+            <div class="setting-group">
+                <label>整体缩放 (%)</label>
+                <input type="number" id="global-scale" value="100" min="10" max="300">
+            </div>
+
+            <!-- Debug显示碰撞箱 -->
+            <div class="setting-group">
+                <label>【Debug】显示碰撞箱</label>
+                <select id="show-collision">
+                    <option value="false" selected>否</option>
+                    <option value="true">是</option>
+                </select>
+            </div>
+
+            <!-- 字幕选项分隔 -->
+            <div class="setting-group full-width section-title">
+                <label>字幕选项</label>
+            </div>
+
+            <!-- 字幕运动方式 -->
+            <div class="setting-group">
+                <label>字幕运动方式</label>
+                <select id="subtitle-motion">
+                    <option value="moving" selected>从下往上一直运动</option>
+                    <option value="static">在屏幕正中间静止不动</option>
+                </select>
+            </div>
+
+            <!-- 隐藏字幕 -->
+            <div class="setting-group">
+                <label>隐藏字幕</label>
+                <select id="hide-subtitle">
+                    <option value="false" selected>否</option>
+                    <option value="true">是</option>
+                </select>
+            </div>
+
+            <!-- 文字选项分隔 -->
+            <div class="setting-group full-width section-title">
+                <label>文字选项</label>
+            </div>
+
+            <!-- 初始随机旋转 -->
+            <div class="setting-group">
+                <label>初始随机旋转 - 起始角度 (度)</label>
+                <input type="number" id="rotation-start" value="0" min="-360" max="360">
+            </div>
+
+            <div class="setting-group">
+                <label>初始随机旋转 - 终点角度 (度)</label>
+                <input type="number" id="rotation-end" value="0" min="-360" max="360">
+            </div>
+
+            <!-- 初始随机加速度 -->
+            <div class="setting-group">
+                <label>初始随机加速度 (0~100)</label>
+                <input type="number" id="random-velocity" value="0" min="0" max="100">
+            </div>
+
+            <!-- 加速度随机角度 -->
+            <div class="setting-group">
+                <label>加速度随机角度 - 起始角度 (度)</label>
+                <input type="number" id="velocity-angle-start" value="0" min="-360" max="360">
+            </div>
+
+            <div class="setting-group">
+                <label>加速度随机角度 - 终点角度 (度)</label>
+                <input type="number" id="velocity-angle-end" value="0" min="-360" max="360">
+            </div>
+
+            <!-- 延迟掉落 -->
+            <div class="setting-group">
+                <label>延迟掉落 (毫秒，0为不启用)</label>
+                <input type="number" id="drop-delay" value="0" min="0" max="10000" step="10">
+            </div>
+
+            <!-- 启用运动模糊 -->
+            <div class="setting-group">
+                <label>启用运动模糊</label>
+                <select id="motion-blur">
+                    <option value="false" selected>否</option>
+                    <option value="true">是</option>
+                </select>
+            </div>
+            
+            <button id="play-btn">播放</button>
+            <button id="render-btn">渲染</button>
+        </div>
+        
+        <!-- 右侧预览区域 -->
+        <div class="preview-area">
+            <div class="preview-container">
+                <div id="subtitle-preview" class="subtitle-preview"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 物理画布容器 -->
+    <div id="canvas-container"></div>
+
+    <!-- 渲染设置对话框 -->
+    <div id="render-dialog" class="render-dialog hidden">
+        <div class="render-dialog-content">
+            <h2>视频渲染设置</h2>
+            
+            <div class="render-setting-group">
+                <label>分辨率</label>
+                <select id="render-resolution">
+                    <option value="1920x1080">1920x1080 (Full HD)</option>
+                    <option value="1280x720">1280x720 (HD)</option>
+                    <option value="2560x1440">2560x1440 (2K)</option>
+                    <option value="3840x2160">3840x2160 (4K)</option>
+                    <option value="custom">自定义...</option>
+                </select>
+            </div>
+
+            <div class="render-setting-group" id="custom-resolution-group" style="display: none;">
+                <label>自定义宽度 (px)</label>
+                <input type="number" id="custom-width" value="1920" min="640" max="7680">
+                <label style="margin-top: 10px;">自定义高度 (px)</label>
+                <input type="number" id="custom-height" value="1080" min="480" max="4320">
+            </div>
+
+            <div class="render-setting-group">
+                <label>帧率 (FPS)</label>
+                <select id="render-fps">
+                    <option value="24">24 FPS</option>
+                    <option value="30" selected>30 FPS</option>
+                    <option value="60">60 FPS</option>
+                </select>
+            </div>
+
+            <div class="render-setting-group">
+                <label>视频时长 (秒)</label>
+                <input type="number" id="render-duration" value="15" min="5" max="120">
+                <small style="color: #888; font-size: 12px;">建议根据动画实际时长设置</small>
+            </div>
+
+            <div class="render-setting-group">
+                <label>视频质量</label>
+                <select id="render-quality">
+                    <option value="2500000">标准 (2.5 Mbps)</option>
+                    <option value="5000000" selected>高 (5 Mbps)</option>
+                    <option value="10000000">超高 (10 Mbps)</option>
+                </select>
+            </div>
+
+            <div class="render-buttons">
+                <button id="render-preview-btn" class="render-btn-secondary">预览</button>
+                <button id="render-start-btn" class="render-btn-primary">开始渲染</button>
+                <button id="render-cancel-btn" class="render-btn-secondary">取消</button>
+            </div>
+
+            <div id="render-progress" class="render-progress hidden">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <div id="progress-text" class="progress-text">准备中...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入外部脚本 -->
+    <script src="sban_physics.js"></script>
+    <script src="sban_render.js"></script>
+</body>
+</html>
