@@ -33,21 +33,21 @@ const projectsData = [
         name: "ZHtoJA",
         description: "UTAU自动跨语种工具（日语声库唱中文）",
         url: "https://www.bilibili.com/video/BV16zWsedEdo/",
-        coverUrl: "https://i0.hdslb.com/bfs/archive/4f04583cb5a7474d5fd28b4a72cc4352d6bc5055.jpg@518w_290h",
+        coverUrl: "images/bili_366468bbb1f6.webp",
         bgColor: ""
     },
     {
         name: "AutoZYC（半弃坑）",
         description: "AviUtl2音mad对轨脚本",
         url: "https://www.bilibili.com/video/BV12Wg5zbEN8/",
-        coverUrl: "https://i0.hdslb.com/bfs/archive/980a2dd21a1afc49ccd7fa2904abd01c8c0ba673.jpg@518w_290h",
+        coverUrl: "images/bili_19cd1e0ead42.webp",
         bgColor: ""
     },
     {
         name: "人力V助手-JinrikiHelper",
         description: "自动化制作人力音源",
         url: "https://www.bilibili.com/video/BV1GLFTzxEVk/",
-        coverUrl: "https://i0.hdslb.com/bfs/archive/88c520f5440cec1b469acbfabb03ad83646d9f69.jpg@518w_290h",
+        coverUrl: "images/bili_fed119f9086f.webp",
         bgColor: ""
     },
     {
