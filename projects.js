@@ -58,6 +58,13 @@ const projectsData = [
         bgColor: "#161923"
     },
     {
+        name: "Sban_physics",
+        description: "全所为物理文字在线制作工具",
+        url: "https://tnot.top/tools/sban/sban_physics/",
+        coverUrl: "images/sban_phy_ol.jpg",
+        bgColor: ""
+    },
+    {
         name: "解冻倒计时",
         description: "可视化每年农历春节刘德华解冻倒计时",
         url: "https://tnot.top/tools/chunjie",
