@@ -114,6 +114,13 @@
             box-shadow: 0 0 10px rgba(41, 182, 246, 0.4);
         }
 
+        .lang-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #000;
+            font-weight: 700;
+        }
+
         section {
             min-height: 100vh;
             padding: 80px 10vw;
@@ -342,6 +349,25 @@
             transition: opacity 0.4s ease;
         }
 
+        .iframe-fallback {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            background: #0d1117;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 20px;
+            z-index: 15;
+        }
+
+        .iframe-fallback.show {
+            display: flex;
+        }
+
         .aspect-ratio iframe.active {
             opacity: 1;
             z-index: 10;
@@ -414,25 +440,26 @@
 <body>
 
     <div class="top-bar">
-        <button class="lang-btn" onclick="alert('English page coming soon')">EN</button>
-        <button class="lang-btn" onclick="alert('日本語ページは準備中です')">JP</button>
+        <button class="lang-btn" data-lang="zh-CN" onclick="setLanguage('zh-CN')">中</button>
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+        <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja')">JP</button>
     </div>
 
     <nav class="side-nav">
-        <div class="nav-dot active" data-label="综合" onclick="scrollToSection('general')"></div>
-        <div class="nav-dot" data-label="下载" onclick="scrollToSection('download')"></div>
-        <div class="nav-dot" data-label="信息" onclick="scrollToSection('info')"></div>
-        <div class="nav-dot" data-label="示例" onclick="scrollToSection('samples')"></div>
+        <div class="nav-dot active" data-section="general" data-label="综合" onclick="scrollToSection('general')"></div>
+        <div class="nav-dot" data-section="download" data-label="下载" onclick="scrollToSection('download')"></div>
+        <div class="nav-dot" data-section="info" data-label="信息" onclick="scrollToSection('info')"></div>
+        <div class="nav-dot" data-section="samples" data-label="示例" onclick="scrollToSection('samples')"></div>
     </nav>
 
     <main>
         <section id="general">
             <div class="intro-text">
                 <h1>Nottthat.</h1>
-                <p>一个平静而略带呆萌的少年音源。<br>适用于UTAU/OpenUTAU。</p>
+                <p id="intro-text">一个平静而略带呆萌的少年音源。<br>适用于UTAU/OpenUTAU。</p>
                 <div class="btn-group" style="justify-content: flex-start;">
-                    <a href="#download" class="md-btn">立即下载 <span class="material-icons">download</span></a>
-                    <a href="#samples" class="md-btn secondary">试听 <span class="material-icons">headphones</span></a>
+                    <a href="#download" class="md-btn"><span id="cta-download">立即下载</span> <span class="material-icons">download</span></a>
+                    <a href="#samples" class="md-btn secondary"><span id="cta-samples">试听</span> <span class="material-icons">headphones</span></a>
                 </div>
             </div>
             
@@ -443,75 +470,75 @@
                      alt="Nottthat 立绘" 
                      class="tachie-img" 
                      id="tachie-img">
-                <div class="hint-text"><span class="material-icons" style="font-size:12px; vertical-align:middle;">touch_app</span> 点击切换背景</div>
+                <div class="hint-text"><span class="material-icons" style="font-size:12px; vertical-align:middle;">touch_app</span> <span id="tachie-hint">点击切换背景</span></div>
             </div>
         </section>
 
         <section id="download">
-            <h2>音源下载</h2>
+            <h2 id="download-title">音源下载</h2>
             <div class="card-grid">
                 <div class="card">
                     <div class="card-title">Nottthat_VCV</div>
                     <div class="card-subtitle">
-                        <span class="chip">日语连续音</span>
-                        <span class="chip">单音阶</span>
-                        <br>配布日期：2024/11/15
+                        <span class="chip" id="vcv-chip-1">日语连续音</span>
+                        <span class="chip" id="vcv-chip-2">单音阶</span>
+                        <br><span id="release-label-1">配布日期：</span>2024/11/15
                     </div>
-                    <p style="margin-bottom: 20px; color: var(--text-secondary);">最初的配布版本，仅支持日语。</p>
+                    <p style="margin-bottom: 20px; color: var(--text-secondary);" id="vcv-desc">最初的配布版本，仅支持日语。</p>
                     <div class="btn-group">
-                        <a href="https://wwqv.lanzout.com/ieLSg2eodzih" target="_blank" class="md-btn">蓝奏云</a>
+                        <a href="https://wwqv.lanzout.com/ieLSg2eodzih" target="_blank" class="md-btn" id="btn-lanzou">蓝奏云</a>
                         <a href="https://bowlroll.net/file/327297" target="_blank" class="md-btn secondary">BowlRoll</a>
-                        <a href="https://www.123865.com/s/NuDGjv-TNbUA?提取码:Krl8" target="_blank" class="md-btn secondary">123云盘</a>
+                        <a href="https://www.123865.com/s/NuDGjv-TNbUA?提取码:Krl8" target="_blank" class="md-btn secondary" id="btn-123pan">123云盘</a>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-title">Nottthat_CN</div>
                     <div class="card-subtitle">
-                        <span class="chip">中文CVVC</span>
-                        <span class="chip">单音阶</span>
-                        <br>配布日期：2025/2/13
+                        <span class="chip" id="cn-chip-1">中文CVVC</span>
+                        <span class="chip" id="cn-chip-2">单音阶</span>
+                        <br><span id="release-label-2">配布日期：</span>2025/2/13
                     </div>
-                    <p style="margin-bottom: 20px; color: var(--text-secondary);">全新的中文音源，更新了立绘。</p>
+                    <p style="margin-bottom: 20px; color: var(--text-secondary);" id="cn-desc">全新的中文音源，更新了立绘。</p>
                     <div class="btn-group">
-                        <a href="https://www.123865.com/s/NuDGjv-8UZUA?提取码:nott" target="_blank" class="md-btn">123云盘</a>
-                        <a href="https://www.123684.com/s/NuDGjv-8UZUA?提取码:nott" target="_blank" class="md-btn secondary">备用链接</a>
+                        <a href="https://www.123865.com/s/NuDGjv-8UZUA?提取码:nott" target="_blank" class="md-btn" id="btn-123pan-main">123云盘</a>
+                        <a href="https://www.123684.com/s/NuDGjv-8UZUA?提取码:nott" target="_blank" class="md-btn secondary" id="btn-backup">备用链接</a>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="info">
-            <h2>详细信息</h2>
+            <h2 id="info-title">详细信息</h2>
             <div class="info-layout">
                 <div class="card">
-                    <h3 style="margin-bottom:15px; color:var(--primary-color);">设定资料</h3>
+                    <h3 style="margin-bottom:15px; color:var(--primary-color);" id="profile-title">设定资料</h3>
                     <div class="info-list">
-                        <p><strong>名字</strong> Nottthat (nott.)</p>
-                        <p><strong>性别</strong> 男</p>
-                        <p><strong>年龄</strong> 16 (实际2岁)</p>
-                        <p><strong>身高</strong> 169 cm</p>
-                        <p><strong>生日</strong> 6月??日 (配布日2024/11/15)</p>
-                        <p><strong>外貌</strong> 异色瞳(深蓝/天蓝)，无高光，蓝色围巾</p>
-                        <p><strong>性格</strong> 平静、呆萌</p>
+                        <p><strong id="label-name">名字</strong> <span id="value-name">Nottthat (nott.)</span></p>
+                        <p><strong id="label-gender">性别</strong> <span id="value-gender">男</span></p>
+                        <p><strong id="label-age">年龄</strong> <span id="value-age">16 (实际2岁)</span></p>
+                        <p><strong id="label-height">身高</strong> <span id="value-height">169 cm</span></p>
+                        <p><strong id="label-birthday">生日</strong> <span id="value-birthday">6月??日 (配布日2024/11/15)</span></p>
+                        <p><strong id="label-appearance">外貌</strong> <span id="value-appearance">异色瞳(深蓝/天蓝)，无高光，蓝色围巾</span></p>
+                        <p><strong id="label-personality">性格</strong> <span id="value-personality">平静、呆萌</span></p>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="margin-bottom:15px; color:var(--primary-color);">制作团队</h3>
+                    <h3 style="margin-bottom:15px; color:var(--primary-color);" id="team-title">制作团队</h3>
                     <div class="info-list">
-                        <p><strong>中之人</strong> TNOT</p>
-                        <p><strong>原音设定</strong> 奈可塔克 (VCV) / TNOT (CN)</p>
-                        <p><strong>立绘绘制</strong> OwO_Yume</p>
-                        <p><strong>更新日志</strong> 2025/2/13 中文正式配布</p>
+                        <p><strong id="label-voice">中之人</strong> <span id="value-voice">TNOT</span></p>
+                        <p><strong id="label-oto">原音设定</strong> <span id="value-oto">奈可塔克 (VCV) / TNOT (CN)</span></p>
+                        <p><strong id="label-illust">立绘绘制</strong> <span id="value-illust">OwO_Yume</span></p>
+                        <p><strong id="label-log">更新日志</strong> <span id="value-log">2025/2/13 中文正式配布</span></p>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="samples">
-            <h2>示例曲目</h2>
-            <p style="margin-bottom: 30px; text-align: center; color: var(--text-secondary);">请在左右切换查看不同的演示视频（没有的话大概率是BUG，等我修）</p>
+            <h2 id="samples-title">示例曲目</h2>
+            <p style="margin-bottom: 30px; text-align: center; color: var(--text-secondary);" id="samples-desc">请在左右切换查看不同的演示视频（没有的话大概率是BUG，等我修）</p>
             
             <div class="carousel-container">
                 <div class="video-header">
@@ -540,7 +567,178 @@
     </main>
 
     <script>
-        // --- 1. 基础页面功能 ---
+        // --- 1. 多语言文案配置 ---
+        const i18n = {
+            'zh-CN': {
+                htmlLang: 'zh-CN',
+                pageTitle: 'Nottthat | UTAU音源配布',
+                nav: { general: '综合', download: '下载', info: '信息', samples: '示例' },
+                introText: '一个平静而略带呆萌的少年音源。<br>适用于UTAU/OpenUTAU。',
+                ctaDownload: '立即下载',
+                ctaSamples: '试听',
+                tachieHint: '点击切换背景',
+                downloadTitle: '音源下载',
+                vcvChip1: '日语连续音',
+                vcvChip2: '单音阶',
+                releaseLabel: '配布日期：',
+                vcvDesc: '最初的配布版本，仅支持日语。',
+                btnLanzou: '蓝奏云',
+                btn123Pan: '123云盘',
+                cnChip1: '中文CVVC',
+                cnChip2: '单音阶',
+                cnDesc: '全新的中文音源，更新了立绘。',
+                btnBackup: '备用链接',
+                infoTitle: '详细信息',
+                profileTitle: '设定资料',
+                labelName: '名字',
+                labelGender: '性别',
+                labelAge: '年龄',
+                labelHeight: '身高',
+                labelBirthday: '生日',
+                labelAppearance: '外貌',
+                labelPersonality: '性格',
+                valueName: 'Nottthat (nott.)',
+                valueGender: '男',
+                valueAge: '16 (实际2岁)',
+                valueHeight: '169 cm',
+                valueBirthday: '6月??日 (配布日2024/11/15)',
+                valueAppearance: '异色瞳(深蓝/天蓝)，无高光，蓝色围巾',
+                valuePersonality: '平静、呆萌',
+                teamTitle: '制作团队',
+                labelVoice: '中之人',
+                labelOto: '原音设定',
+                labelIllust: '立绘绘制',
+                labelLog: '更新日志',
+                valueVoice: 'TNOT',
+                valueOto: '奈可塔克 (VCV) / TNOT (CN)',
+                valueIllust: 'OwO_Yume',
+                valueLog: '2025/2/13 中文正式配布',
+                samplesTitle: '示例曲目',
+                samplesDesc: '请在左右切换查看不同的演示视频（没有的话大概率是BUG，等我修）',
+                loadingText: '加载中...',
+                videoLang: {
+                    v1: '翻调 日语 VCV',
+                    v2: '翻调 日语 VCV @ムーンライト銀河',
+                    v3: '翻调 中文 CVVC',
+                    v4: '翻调 中文 CVVC @ルース毛',
+                    v5: '原创曲 日语 VCV @随机南部坟墓'
+                }
+            },
+            en: {
+                htmlLang: 'en',
+                pageTitle: 'Nottthat | UTAU Voicebank Distribution',
+                nav: { general: 'Overview', download: 'Download', info: 'Info', samples: 'Samples' },
+                introText: 'A calm and slightly dopey boy voicebank.<br>For UTAU/OpenUTAU.',
+                ctaDownload: 'Download Now',
+                ctaSamples: 'Listen',
+                tachieHint: 'Click to switch background',
+                downloadTitle: 'Voicebank Downloads',
+                vcvChip1: 'Japanese VCV',
+                vcvChip2: 'Single Pitch',
+                releaseLabel: 'Release Date: ',
+                vcvDesc: 'The first release version, Japanese only.',
+                btnLanzou: 'Lanzou Cloud',
+                btn123Pan: '123 Cloud',
+                cnChip1: 'Chinese CVVC',
+                cnChip2: 'Single Pitch',
+                cnDesc: 'A brand-new Chinese voicebank with updated artwork.',
+                btnBackup: 'Backup Link',
+                infoTitle: 'Details',
+                profileTitle: 'Character Profile',
+                labelName: 'Name',
+                labelGender: 'Gender',
+                labelAge: 'Age',
+                labelHeight: 'Height',
+                labelBirthday: 'Birthday',
+                labelAppearance: 'Appearance',
+                labelPersonality: 'Personality',
+                valueName: 'Nottthat (nott.)',
+                valueGender: 'Male',
+                valueAge: '16 (actually 2)',
+                valueHeight: '169 cm',
+                valueBirthday: 'June ?? (release day: 2024/11/15)',
+                valueAppearance: 'Heterochromia (dark blue/sky blue), no eye highlights, blue scarf',
+                valuePersonality: 'Calm, a little airheaded',
+                teamTitle: 'Production Team',
+                labelVoice: 'Voice Provider',
+                labelOto: 'Oto Configuration',
+                labelIllust: 'Illustration',
+                labelLog: 'Update Log',
+                valueVoice: 'TNOT',
+                valueOto: 'Nekotac (VCV) / TNOT (CN)',
+                valueIllust: 'OwO_Yume',
+                valueLog: '2025/2/13 Chinese voicebank officially released',
+                samplesTitle: 'Demo Tracks',
+                samplesDesc: 'Use left/right to switch demo videos (if they disappear, that is likely a bug).',
+                loadingText: 'Loading...',
+                videoLang: {
+                    v1: 'Cover - Japanese VCV',
+                    v2: 'Cover - Japanese VCV @Moonlight Galaxy',
+                    v3: 'Cover - Chinese CVVC',
+                    v4: 'Cover - Chinese CVVC @Ru-su-Mao',
+                    v5: 'Original - Japanese VCV @Random South Tomb'
+                }
+            },
+            ja: {
+                htmlLang: 'ja',
+                pageTitle: 'Nottthat | UTAU音源配布',
+                nav: { general: '総合', download: '配布', info: '情報', samples: 'サンプル' },
+                introText: '落ち着いていて、少し天然な少年ボイス音源。<br>UTAU/OpenUTAU向け。',
+                ctaDownload: 'ダウンロード',
+                ctaSamples: '試聴',
+                tachieHint: 'クリックで背景切替',
+                downloadTitle: '音源ダウンロード',
+                vcvChip1: '日本語VCV',
+                vcvChip2: '単音階',
+                releaseLabel: '配布日：',
+                vcvDesc: '最初の配布版。日本語のみ対応。',
+                btnLanzou: 'Lanzou',
+                btn123Pan: '123クラウド',
+                cnChip1: '中国語CVVC',
+                cnChip2: '単音階',
+                cnDesc: '新しい中国語音源。立ち絵も更新。',
+                btnBackup: '予備リンク',
+                infoTitle: '詳細情報',
+                profileTitle: 'キャラクター設定',
+                labelName: '名前',
+                labelGender: '性別',
+                labelAge: '年齢',
+                labelHeight: '身長',
+                labelBirthday: '誕生日',
+                labelAppearance: '外見',
+                labelPersonality: '性格',
+                valueName: 'Nottthat (nott.)',
+                valueGender: '男',
+                valueAge: '16歳（実際は2歳）',
+                valueHeight: '169 cm',
+                valueBirthday: '6月??日（配布日: 2024/11/15）',
+                valueAppearance: 'オッドアイ（濃青/空色）、ハイライトなし、青いマフラー',
+                valuePersonality: '落ち着き、少し天然',
+                teamTitle: '制作チーム',
+                labelVoice: '中の人',
+                labelOto: '原音設定',
+                labelIllust: '立ち絵',
+                labelLog: '更新履歴',
+                valueVoice: 'TNOT',
+                valueOto: '奈可塔克 (VCV) / TNOT (CN)',
+                valueIllust: 'OwO_Yume',
+                valueLog: '2025/2/13 中国語音源を正式配布',
+                samplesTitle: 'サンプル曲',
+                samplesDesc: '左右でデモ動画を切り替えてください（表示されない場合はバグの可能性があります）。',
+                loadingText: '読み込み中...',
+                videoLang: {
+                    v1: 'カバー 日本語 VCV',
+                    v2: 'カバー 日本語 VCV @ムーンライト銀河',
+                    v3: 'カバー 中国語 CVVC',
+                    v4: 'カバー 中国語 CVVC @ルース毛',
+                    v5: 'オリジナル 日本語 VCV @随机南部坟墓'
+                }
+            }
+        };
+
+        let currentLanguage = 'zh-CN';
+
+        // --- 2. 基础页面功能 ---
         function scrollToSection(id) {
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
         }
@@ -560,16 +758,11 @@
 
             navDots.forEach(dot => {
                 dot.classList.remove('active');
-                if (dot.getAttribute('data-label') === getLabelFromId(current)) {
+                if (dot.getAttribute('data-section') === current) {
                     dot.classList.add('active');
                 }
             });
         });
-
-        function getLabelFromId(id) {
-            const map = { 'general': '综合', 'download': '下载', 'info': '信息', 'samples': '示例' };
-            return map[id];
-        }
 
         function toggleTachieMode() {
             const container = document.getElementById('tachie-display');
@@ -583,33 +776,33 @@
             }
         }
 
-        // --- 2. 视频轮播功能配置区 ---
+        // --- 3. 视频轮播功能配置区 ---
         
         // 【重要】请在这里填入你的5个视频信息
         const videoList = [
             {
                 title: "名の無い星が空に堕ちたら", // 视频标题
-                lang: "翻调 日语 VCV",            // 标签
+                langKey: "v1",                    // 标签 key
                 bvid: "BV1GsDCYVEww"           // BV号
             },
             {
                 title: "siwe",
-                lang: "翻调 日语 VCV @ムーンライト銀河",
+                langKey: "v2",
                 bvid: "BV1tfs5ziEks"
             },
             {
                 title: "〇",
-                lang: "翻调 中文 CVVC",
+                langKey: "v3",
                 bvid: "BV1prsRzgENz"
             },
             {
                 title: "虛有其表的三言兩語",
-                lang: "翻调 中文 CVVC @ルース毛",
+                langKey: "v4",
                 bvid: "BV1H3VRzrEoj"
             },
             {
                 title: "发车",
-                lang: "原创曲 日语 VCV @随机南部坟墓",
+                langKey: "v5",
                 bvid: "BV1sJCMY5EB7"
             }
         ];
@@ -620,6 +813,7 @@
         const vTitle = document.getElementById('v-title');
         const iframeContainer = document.getElementById('iframe-container');
         const dotsContainer = document.getElementById('dots-container');
+        let loadTimeoutId = null;
 
         // 初始化播放器
         function initCarousel() {
@@ -640,17 +834,47 @@
             infoDisplay.classList.remove('active'); // 隐藏
             
             setTimeout(() => {
-                vLang.textContent = video.lang;
+                vLang.textContent = i18n[currentLanguage].videoLang[video.langKey] || '';
                 vTitle.textContent = video.title;
                 infoDisplay.classList.add('active'); // 显示
             }, 300);
 
             // 2. 更新 Iframe 内容
-            const iframeHtml = `
-                <iframe src="https://player.bilibili.com/player.html?bvid=${video.bvid}&p=1&autoplay=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
-                </iframe>`;
-            
-            iframeContainer.innerHTML = iframeHtml;
+            iframeContainer.innerHTML = '';
+
+            const iframe = document.createElement('iframe');
+            iframe.className = 'active';
+            iframe.src = `https://player.bilibili.com/player.html?bvid=${video.bvid}&p=1&autoplay=0`;
+            iframe.scrolling = 'no';
+            iframe.setAttribute('frameborder', 'no');
+            iframe.setAttribute('allowfullscreen', 'true');
+            iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+            iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+
+            const fallback = document.createElement('div');
+            fallback.className = 'iframe-fallback';
+            fallback.innerHTML = `
+                <p>播放器加载失败，可能被浏览器扩展拦截。</p>
+                <a class="md-btn" href="https://www.bilibili.com/video/${video.bvid}" target="_blank" rel="noopener noreferrer">在B站打开视频</a>
+            `;
+
+            iframe.addEventListener('load', () => {
+                if (loadTimeoutId) {
+                    clearTimeout(loadTimeoutId);
+                    loadTimeoutId = null;
+                }
+                fallback.classList.remove('show');
+            });
+
+            if (loadTimeoutId) {
+                clearTimeout(loadTimeoutId);
+            }
+            loadTimeoutId = setTimeout(() => {
+                fallback.classList.add('show');
+            }, 6000);
+
+            iframeContainer.appendChild(iframe);
+            iframeContainer.appendChild(fallback);
 
             // 3. 更新指示点状态
             const dots = document.querySelectorAll('.c-dot');
@@ -672,8 +896,95 @@
             updateSlide();
         }
 
+        function applyTranslations(lang) {
+            const t = i18n[lang] || i18n['zh-CN'];
+
+            document.documentElement.lang = t.htmlLang;
+            document.title = t.pageTitle;
+
+            document.getElementById('intro-text').innerHTML = t.introText;
+            document.getElementById('cta-download').textContent = t.ctaDownload;
+            document.getElementById('cta-samples').textContent = t.ctaSamples;
+            document.getElementById('tachie-hint').textContent = t.tachieHint;
+
+            document.getElementById('download-title').textContent = t.downloadTitle;
+            document.getElementById('vcv-chip-1').textContent = t.vcvChip1;
+            document.getElementById('vcv-chip-2').textContent = t.vcvChip2;
+            document.getElementById('release-label-1').textContent = t.releaseLabel;
+            document.getElementById('vcv-desc').textContent = t.vcvDesc;
+            document.getElementById('btn-lanzou').textContent = t.btnLanzou;
+            document.getElementById('btn-123pan').textContent = t.btn123Pan;
+
+            document.getElementById('cn-chip-1').textContent = t.cnChip1;
+            document.getElementById('cn-chip-2').textContent = t.cnChip2;
+            document.getElementById('release-label-2').textContent = t.releaseLabel;
+            document.getElementById('cn-desc').textContent = t.cnDesc;
+            document.getElementById('btn-123pan-main').textContent = t.btn123Pan;
+            document.getElementById('btn-backup').textContent = t.btnBackup;
+
+            document.getElementById('info-title').textContent = t.infoTitle;
+            document.getElementById('profile-title').textContent = t.profileTitle;
+            document.getElementById('label-name').textContent = t.labelName;
+            document.getElementById('label-gender').textContent = t.labelGender;
+            document.getElementById('label-age').textContent = t.labelAge;
+            document.getElementById('label-height').textContent = t.labelHeight;
+            document.getElementById('label-birthday').textContent = t.labelBirthday;
+            document.getElementById('label-appearance').textContent = t.labelAppearance;
+            document.getElementById('label-personality').textContent = t.labelPersonality;
+            document.getElementById('value-name').textContent = t.valueName;
+            document.getElementById('value-gender').textContent = t.valueGender;
+            document.getElementById('value-age').textContent = t.valueAge;
+            document.getElementById('value-height').textContent = t.valueHeight;
+            document.getElementById('value-birthday').textContent = t.valueBirthday;
+            document.getElementById('value-appearance').textContent = t.valueAppearance;
+            document.getElementById('value-personality').textContent = t.valuePersonality;
+
+            document.getElementById('team-title').textContent = t.teamTitle;
+            document.getElementById('label-voice').textContent = t.labelVoice;
+            document.getElementById('label-oto').textContent = t.labelOto;
+            document.getElementById('label-illust').textContent = t.labelIllust;
+            document.getElementById('label-log').textContent = t.labelLog;
+            document.getElementById('value-voice').textContent = t.valueVoice;
+            document.getElementById('value-oto').textContent = t.valueOto;
+            document.getElementById('value-illust').textContent = t.valueIllust;
+            document.getElementById('value-log').textContent = t.valueLog;
+
+            document.getElementById('samples-title').textContent = t.samplesTitle;
+            document.getElementById('samples-desc').textContent = t.samplesDesc;
+
+            const navLabelMap = t.nav;
+            document.querySelectorAll('.nav-dot').forEach(dot => {
+                const section = dot.getAttribute('data-section');
+                dot.setAttribute('data-label', navLabelMap[section] || '');
+            });
+
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const isActive = btn.getAttribute('data-lang') === lang;
+                btn.classList.toggle('active', isActive);
+            });
+
+            if (vLang.textContent === '加载中...' || vLang.textContent === 'Loading...' || vLang.textContent === '読み込み中...') {
+                vLang.textContent = t.loadingText;
+                vTitle.textContent = t.loadingText;
+            }
+
+            updateSlide();
+        }
+
+        function setLanguage(lang) {
+            if (!i18n[lang]) return;
+            currentLanguage = lang;
+            localStorage.setItem('nottthat-lang', lang);
+            applyTranslations(lang);
+        }
+
         // 启动轮播逻辑
-        document.addEventListener('DOMContentLoaded', initCarousel);
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('nottthat-lang');
+            currentLanguage = i18n[savedLang] ? savedLang : 'zh-CN';
+            applyTranslations(currentLanguage);
+            initCarousel();
+        });
 
     </script>
 </body>
