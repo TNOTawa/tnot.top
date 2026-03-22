@@ -53,7 +53,7 @@ const projectsData = [
     {
         name: "《文字游戏世界》魔法书",
         description: "第三方维护的《文字游戏世界》黑魔法文档，包括许多实用工具。",
-        url: "https://tnotawa.github.io/Magic-Book-of-Word-Game-World/",
+        url: "https://wgw-magicbook.tnot.top/",
         coverUrl: "",
         bgColor: "#161923"
     },
