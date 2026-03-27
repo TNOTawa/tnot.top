@@ -302,6 +302,36 @@ a:focus, button:focus {
     z-index: 1000; /* 确保按钮在其他元素之上 */
 }
 
+.footer-links {
+    margin-top: 40px;
+    padding-top: 10px;
+}
+
+.friend-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.friend-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    text-decoration: none;
+    box-shadow: 0 2px 6px var(--shadow-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.friend-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px var(--shadow-color);
+}
+
 [data-theme="dark"] .theme-toggle {
     background: var(--toggle-dark-bg);
 }
@@ -326,5 +356,14 @@ a:focus, button:focus {
     .bili-avatar {
         margin-right: 0;
         margin-bottom: 15px;
+    }
+
+    .friend-links {
+        flex-direction: column;
+    }
+
+    .friend-link {
+        width: 100%;
+        box-sizing: border-box;
     }
 }
